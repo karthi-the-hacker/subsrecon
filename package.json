@@ -1,0 +1,71 @@
+
+{
+  "name": "subsrecon",
+  "version": "1.0.0",
+  "description": "SubsRecon is an open-source subdomain discovery and attack surface intelligence CLI tool for authorized security assessments. It supports subdomain enumeration, DNS reconnaissance, and security assessment workflows.",
+  "homepage": "https://cappriciosec.com/subsrecon",
+  "main": "subsrecon.js",
+  "bin": {
+    "subsrecon": "./subsrecon.js",
+    "SubsRecon": "./subsrecon.js",
+    "subs-recon": "./subsrecon.js"
+  },
+  "scripts": {
+    "start": "node subsrecon.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:bin": "pkg subsrecon.js --targets node18-linux-x64,node18-macos-x64,node18-win-x64 --out-path dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karthi-the-hacker/subsrecon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/karthi-the-hacker/subsrecon/issues"
+  },
+  "author": {
+    "name": "Karthikeyan V (karthithehacker)",
+    "url": "https://karthithehacker.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "subsrecon",
+    "subdomain enumeration",
+    "subdomain discovery",
+    "attack surface management",
+    "attack surface intelligence",
+    "dns reconnaissance",
+    "reconnaissance",
+    "cybersecurity",
+    "ethical hacking",
+    "penetration testing",
+    "bug bounty",
+    "osint",
+    "security testing",
+    "cli tool",
+    "kali linux",
+    "security assessment",
+    "cappriciosec",
+    "karthithehacker"
+  ],
+  "files": [
+    "subsrecon.js",
+    "includes",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "cors": "^2.8.6",
+    "cytoscape": "^3.34.4",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "lowdb": "^1.0.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
