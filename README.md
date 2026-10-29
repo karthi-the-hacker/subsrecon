@@ -87,7 +87,7 @@ npm install subsrecon -g
 
 ```bash
 # Start the subsrecon tool
-sibsrecon
+subsrecon
 ```
 
 * Open the Admin page: `https://cappriciosec.com/subsrecon`
