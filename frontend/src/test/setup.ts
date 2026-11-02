@@ -29,7 +29,7 @@ if (typeof HTMLCanvasElement !== 'undefined') {
     transform: vi.fn(),
     rect: vi.fn(),
     clip: vi.fn(),
-  })) as any;
+  })) as unknown as typeof HTMLCanvasElement.prototype.getContext;
 }
 
 afterEach(() => {

@@ -29,17 +29,17 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="sm">
       <div className="space-y-4 font-mono">
-        <div className="flex items-start gap-3 p-3.5 rounded-lg bg-dark-bg/80 border border-dark-border">
+        <div className="flex items-start gap-3 p-3.5 rounded-[3px] bg-[#FAFAFA] border border-[#DCDCDC]">
           <div
-            className={`p-2 rounded-lg shrink-0 ${
+            className={`p-2 rounded-[3px] shrink-0 ${
               variant === 'danger'
-                ? 'bg-danger/20 text-danger border border-danger/40 shadow-[0_0_12px_rgba(255,42,95,0.3)]'
-                : 'bg-primary/20 text-primary border border-primary/40 shadow-[0_0_12px_rgba(0,255,136,0.3)]'
+                ? 'bg-danger/10 text-danger border border-danger/30'
+                : 'bg-primary/10 text-primary border border-primary/30'
             }`}
           >
             <ShieldAlert className="w-5 h-5" />
           </div>
-          <p className="text-xs text-dark-muted font-sans leading-relaxed pt-0.5">{message}</p>
+          <p className="text-xs text-[#666666] font-sans leading-relaxed pt-0.5">{message}</p>
         </div>
 
         <div className="flex justify-end gap-2.5 pt-2">
@@ -54,3 +54,5 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     </Modal>
   );
 };
+
+export default ConfirmDialog;

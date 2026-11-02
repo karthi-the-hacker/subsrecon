@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 animate-fadeIn"
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           onClose();
@@ -70,18 +70,18 @@ export const Modal: React.FC<ModalProps> = ({
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
         aria-describedby={description ? 'modal-description' : undefined}
-        className={`w-full ${maxWidthStyles[maxWidth]} bg-dark-card/95 backdrop-blur-2xl border border-primary/30 rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.9),0_0_20px_rgba(0,255,136,0.15)] p-6 flex flex-col focus:outline-none relative cyber-corners`}
+        className={`w-full ${maxWidthStyles[maxWidth]} bg-white border border-[#111111] rounded-[3px] shadow-lg p-6 flex flex-col focus:outline-none relative`}
       >
-        <div className="flex items-center justify-between pb-3 border-b border-dark-border/80 mb-4 font-mono">
+        <div className="flex items-center justify-between pb-3 border-b border-[#DCDCDC] mb-4 font-mono">
           <div>
             {title && (
-              <h2 id="modal-title" className="text-sm sm:text-base font-bold text-dark-text tracking-wide flex items-center gap-2">
+              <h2 id="modal-title" className="text-sm sm:text-base font-bold text-[#111111] uppercase tracking-wider flex items-center gap-2">
                 <span className="text-primary">&gt;</span>
                 {title}
               </h2>
             )}
             {description && (
-              <p id="modal-description" className="text-xs text-dark-muted mt-1 font-sans">
+              <p id="modal-description" className="text-xs text-[#666666] mt-1 font-sans">
                 {description}
               </p>
             )}
@@ -89,7 +89,7 @@ export const Modal: React.FC<ModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="text-dark-muted hover:text-primary p-1.5 rounded-lg hover:bg-primary/10 transition-colors focus:outline-none focus:ring-1 focus:ring-primary"
+            className="text-[#666666] hover:text-[#111111] p-1.5 rounded-[3px] hover:bg-[#FAFAFA] transition-colors focus:outline-none"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -100,3 +100,5 @@ export const Modal: React.FC<ModalProps> = ({
     </div>
   );
 };
+
+export default Modal;

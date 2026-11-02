@@ -34,16 +34,16 @@ import { ReconStatus, DomainStatus, SubdomainEntry } from '@/types/api';
 import { formatDistanceToNow, parseISO, format } from 'date-fns';
 
 const TRIAGE_STATUS_OPTIONS: SelectOption<DomainStatus>[] = [
-  { value: 'new', label: 'NEW', dotColor: '#64748B', badgeVariant: 'muted' },
-  { value: 'pending', label: 'PENDING', dotColor: '#FFB000', badgeVariant: 'warning' },
-  { value: 'success', label: 'TRIAGED', dotColor: '#00FF88', badgeVariant: 'success' },
+  { value: 'new', label: 'NEW', dotColor: '#888888', badgeVariant: 'muted' },
+  { value: 'pending', label: 'PENDING', dotColor: '#FF7900', badgeVariant: 'warning' },
+  { value: 'success', label: 'TRIAGED', dotColor: '#16A34A', badgeVariant: 'success' },
 ];
 
 const STATUS_FILTER_OPTIONS: SelectOption<string>[] = [
   { value: 'all', label: 'All Triage Statuses' },
-  { value: 'new', label: 'Status: New', dotColor: '#64748B' },
-  { value: 'pending', label: 'Status: Pending', dotColor: '#FFB000' },
-  { value: 'success', label: 'Status: Triaged', dotColor: '#00FF88' },
+  { value: 'new', label: 'Status: New', dotColor: '#888888' },
+  { value: 'pending', label: 'Status: Pending', dotColor: '#FF7900' },
+  { value: 'success', label: 'Status: Triaged', dotColor: '#16A34A' },
 ];
 
 export const ReconDetail: React.FC<{
@@ -71,6 +71,7 @@ export const ReconDetail: React.FC<{
       return next;
     }, { replace: true });
   };
+
   const [subdomainSearch, setSubdomainSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [subdomainPage, setSubdomainPage] = useState(1);
@@ -88,13 +89,11 @@ export const ReconDetail: React.FC<{
     if (!recon?.subdomains) return [];
 
     return recon.subdomains.filter((sub: SubdomainEntry) => {
-      // Status filter
       const currentStatus = (recon.domainStatuses && recon.domainStatuses[sub.hostname]) || sub.status || 'new';
       if (statusFilter !== 'all' && currentStatus !== statusFilter) {
         return false;
       }
 
-      // Search query
       if (subdomainSearch.trim()) {
         const query = subdomainSearch.trim().toLowerCase();
         const matchHost = sub.hostname.toLowerCase().includes(query);
@@ -156,35 +155,35 @@ export const ReconDetail: React.FC<{
     switch (status) {
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-primary/10 text-primary border border-primary/40 shadow-[0_0_10px_rgba(0,255,136,0.25)]">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-xs font-mono font-bold bg-success-light text-success border border-[#BBF7D0]">
             <CheckCircle2 className="w-3.5 h-3.5" />
             COMPLETED
           </span>
         );
       case 'running':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/40 animate-pulse shadow-[0_0_15px_rgba(0,240,255,0.3)]">
-            <Activity className="w-3.5 h-3.5 animate-spin text-cyber-cyan" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-xs font-mono font-bold bg-[#FFF7ED] text-primary border border-primary/40">
+            <Activity className="w-3.5 h-3.5 animate-spin text-primary" />
             SUBFINDER ACTIVE
           </span>
         );
       case 'failed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-danger/15 text-danger border border-danger/40 shadow-[0_0_10px_rgba(255,42,95,0.2)]">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-xs font-mono font-bold bg-danger-light text-danger border border-[#FECACA]">
             <XCircle className="w-3.5 h-3.5" />
             SCAN FAILED
           </span>
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-warning/15 text-warning border border-warning/40">
-            <Clock className="w-3.5 h-3.5" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-xs font-mono font-bold bg-[#FFF7ED] text-primary border border-primary/40">
+            <Clock className="w-3.5 h-3.5 text-primary" />
             QUEUED
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-dark-border/40 text-dark-muted">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] text-xs font-mono font-bold bg-[#FAFAFA] text-[#666666] border border-[#DCDCDC]">
             <AlertTriangle className="w-3.5 h-3.5" />
             {status}
           </span>
@@ -193,32 +192,32 @@ export const ReconDetail: React.FC<{
   };
 
   return (
-    <div className="space-y-4 sm:space-y-5 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Navigation & Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-dark-border/80">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#DCDCDC]">
         <div className="flex items-center gap-3">
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
             onClick={() => navigate('/recons')}
             aria-label="Back to campaigns"
-            className="p-2 text-dark-muted hover:text-primary"
+            className="p-2"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 text-[#111111]" />
           </Button>
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-xl sm:text-2xl font-tech font-bold text-white tracking-wider uppercase">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#111111] tracking-tight uppercase">
                 {recon.name}
               </h2>
               {getStatusBadge(recon.status)}
             </div>
-            <p className="text-xs text-dark-muted font-mono mt-1 flex items-center gap-2">
+            <p className="text-xs text-[#666666] font-mono mt-1 flex items-center gap-2">
               <span className="text-primary font-bold">ID:</span>
-              <span className="text-dark-text">{recon.id}</span>
-              <span className="text-dark-border">•</span>
-              <span className="text-cyber-cyan font-bold">DISPATCH:</span>
-              <span>{recon.reportTo}</span>
+              <span className="text-[#111111] font-bold">{recon.id}</span>
+              <span className="text-[#DCDCDC]">•</span>
+              <span className="text-primary font-bold">DISPATCH:</span>
+              <span className="text-[#111111]">{recon.reportTo}</span>
             </p>
           </div>
         </div>
@@ -239,7 +238,7 @@ export const ReconDetail: React.FC<{
             onClick={() => setShowDeleteModal(true)}
             disabled={recon.status === 'running'}
             title={recon.status === 'running' ? 'Active scan cannot be removed' : 'Purge Campaign'}
-            className="text-danger/80 hover:text-danger hover:bg-danger/10"
+            className="text-danger hover:bg-danger-light"
             leftIcon={<Trash2 className="w-3.5 h-3.5" />}
           >
             PURGE
@@ -251,13 +250,13 @@ export const ReconDetail: React.FC<{
       {recon.status === 'failed' && (recon.scan?.errors?.length ?? 0) > 0 && (
         <div
           role="alert"
-          className="p-4 rounded-xl bg-danger/15 border border-danger/40 text-xs text-danger space-y-2 font-mono shadow-[0_0_20px_rgba(255,42,95,0.25)]"
+          className="p-4 rounded-[3px] bg-danger-light border border-danger/40 text-xs text-danger space-y-2 font-mono"
         >
           <div className="flex items-center gap-2 font-bold">
             <XCircle className="w-4 h-4" />
             <span>CRITICAL ENUMERATION EXCEPTION:</span>
           </div>
-          <ul className="list-disc list-inside space-y-1 text-[11px] bg-dark-bg/90 p-3 rounded-lg border border-danger/30">
+          <ul className="list-disc list-inside space-y-1 text-[11px] bg-white p-3 rounded-[2px] border border-danger/30">
             {recon.scan.errors.map((err, i) => (
               <li key={i}>{err}</li>
             ))}
@@ -268,21 +267,21 @@ export const ReconDetail: React.FC<{
       {/* Summary Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Scope Root Domains */}
-        <div className="p-4 cyber-panel rounded-xl relative cyber-corners group">
-          <div className="flex items-center justify-between text-dark-muted mb-2 font-mono">
-            <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-primary transition-colors">
+        <div className="p-4 bg-white border border-[#DCDCDC] rounded-[3px] shadow-sm">
+          <div className="flex items-center justify-between text-[#666666] mb-2 font-mono">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#666666]">
               ROOT SCOPES
             </span>
             <Globe className="w-4 h-4 text-primary" />
           </div>
-          <span className="text-2xl font-tech font-bold text-white neon-text-green">
+          <span className="text-2xl font-bold text-[#111111]">
             {recon.domainCount || (recon.domains || []).length}
           </span>
           <div className="mt-2.5 flex flex-wrap gap-1">
             {(recon.domains || []).map((dom) => (
               <span
                 key={dom}
-                className="px-2 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-[11px] font-mono text-dark-text shadow-sm"
+                className="px-2 py-0.5 rounded-[2px] bg-[#FAFAFA] border border-[#DCDCDC] text-[11px] font-mono text-[#111111]"
               >
                 {dom}
               </span>
@@ -291,36 +290,36 @@ export const ReconDetail: React.FC<{
         </div>
 
         {/* Discovered Subdomains */}
-        <div className="p-4 cyber-panel rounded-xl relative cyber-corners group">
-          <div className="flex items-center justify-between text-dark-muted mb-2 font-mono">
-            <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-cyber-cyan transition-colors">
+        <div className="p-4 bg-white border border-[#DCDCDC] rounded-[3px] shadow-sm">
+          <div className="flex items-center justify-between text-[#666666] mb-2 font-mono">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#666666]">
               MAPPED ASSETS
             </span>
-            <Network className="w-4 h-4 text-cyber-cyan" />
+            <Network className="w-4 h-4 text-primary" />
           </div>
-          <span className="text-2xl font-tech font-bold text-white neon-text-cyan">
+          <span className="text-2xl font-bold text-primary">
             {recon.subdomainCount || (recon.subdomains || []).length}
           </span>
-          <p className="text-[11px] font-mono text-dark-muted mt-2">
+          <p className="text-[11px] font-mono text-[#666666] mt-2">
             {recon.relationships?.length || 0} relational topology edges
           </p>
         </div>
 
         {/* Scan Timestamps */}
-        <div className="p-4 cyber-panel rounded-xl relative cyber-corners group">
-          <div className="flex items-center justify-between text-dark-muted mb-2 font-mono">
-            <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-warning transition-colors">
+        <div className="p-4 bg-white border border-[#DCDCDC] rounded-[3px] shadow-sm">
+          <div className="flex items-center justify-between text-[#666666] mb-2 font-mono">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#666666]">
               SCAN TIMELINE
             </span>
-            <Clock className="w-4 h-4 text-warning" />
+            <Clock className="w-4 h-4 text-primary" />
           </div>
           <div className="space-y-1 font-mono text-xs">
-            <p className="text-dark-muted">
-              START: <span className="text-dark-text font-bold">{format(parseISO(recon.createdAt), 'MMM d, HH:mm')}</span>
+            <p className="text-[#666666]">
+              START: <span className="text-[#111111] font-bold">{format(parseISO(recon.createdAt), 'MMM d, HH:mm')}</span>
             </p>
-            <p className="text-dark-muted">
+            <p className="text-[#666666]">
               END:{' '}
-              <span className="text-dark-text font-bold">
+              <span className="text-[#111111] font-bold">
                 {recon.completedAt ? format(parseISO(recon.completedAt), 'MMM d, HH:mm') : 'PROCESSING...'}
               </span>
             </p>
@@ -328,15 +327,15 @@ export const ReconDetail: React.FC<{
         </div>
 
         {/* Database info */}
-        <div className="p-4 cyber-panel rounded-xl relative cyber-corners group">
-          <div className="flex items-center justify-between text-dark-muted mb-2 font-mono">
-            <span className="text-[11px] font-bold uppercase tracking-wider group-hover:text-primary transition-colors">
+        <div className="p-4 bg-white border border-[#DCDCDC] rounded-[3px] shadow-sm">
+          <div className="flex items-center justify-between text-[#666666] mb-2 font-mono">
+            <span className="text-[12px] font-bold uppercase tracking-wider text-[#666666]">
               STORAGE REGISTRY
             </span>
             <Database className="w-4 h-4 text-primary" />
           </div>
-          <p className="text-xs font-mono text-dark-text truncate mt-1 font-semibold">{recon.database}</p>
-          <p className="text-[11px] font-mono text-dark-muted mt-2">
+          <p className="text-xs font-mono text-[#111111] truncate mt-1 font-bold">{recon.database}</p>
+          <p className="text-[11px] font-mono text-[#666666] mt-2">
             Last accessed{' '}
             {formatDistanceToNow(parseISO(recon.lastUsedAt), {
               addSuffix: true,
@@ -346,13 +345,13 @@ export const ReconDetail: React.FC<{
       </div>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 border-b border-dark-border/80 pb-2 font-mono overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-[#DCDCDC] pb-2 font-mono overflow-x-auto">
         <button
           onClick={() => handleTabChange('mapping')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 border flex items-center gap-2 whitespace-nowrap ${
+          className={`px-4 py-2 text-xs font-bold rounded-[3px] transition-colors border flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'mapping'
-              ? 'bg-primary/15 border-primary text-primary shadow-[0_0_15px_rgba(0,255,136,0.3)]'
-              : 'border-transparent text-dark-muted hover:text-dark-text hover:bg-dark-card/60'
+              ? 'bg-[#FFF7ED] border-[#111111] text-[#111111] border-l-4 border-l-primary'
+              : 'border-transparent text-[#666666] hover:text-[#111111] hover:bg-white hover:border-[#DCDCDC]'
           }`}
         >
           <Network className="w-3.5 h-3.5 text-primary" />
@@ -360,30 +359,30 @@ export const ReconDetail: React.FC<{
         </button>
         <button
           onClick={() => handleTabChange('subdomains')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 border whitespace-nowrap ${
+          className={`px-4 py-2 text-xs font-bold rounded-[3px] transition-colors border whitespace-nowrap ${
             activeTab === 'subdomains'
-              ? 'bg-primary/10 border-primary text-white shadow-[0_0_15px_rgba(0,255,136,0.2)]'
-              : 'border-transparent text-dark-muted hover:text-dark-text hover:bg-dark-card/60'
+              ? 'bg-[#FFF7ED] border-[#111111] text-[#111111] border-l-4 border-l-primary'
+              : 'border-transparent text-[#666666] hover:text-[#111111] hover:bg-white hover:border-[#DCDCDC]'
           }`}
         >
           DISCOVERED SUBDOMAINS ({(recon.subdomains || []).length})
         </button>
         <button
           onClick={() => handleTabChange('relationships')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 border whitespace-nowrap ${
+          className={`px-4 py-2 text-xs font-bold rounded-[3px] transition-colors border whitespace-nowrap ${
             activeTab === 'relationships'
-              ? 'bg-primary/10 border-primary text-white shadow-[0_0_15px_rgba(0,255,136,0.2)]'
-              : 'border-transparent text-dark-muted hover:text-dark-text hover:bg-dark-card/60'
+              ? 'bg-[#FFF7ED] border-[#111111] text-[#111111] border-l-4 border-l-primary'
+              : 'border-transparent text-[#666666] hover:text-[#111111] hover:bg-white hover:border-[#DCDCDC]'
           }`}
         >
           TOPOLOGY HIERARCHY ({(recon.relationships || []).length})
         </button>
         <button
           onClick={() => handleTabChange('diagnostics')}
-          className={`px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 border whitespace-nowrap ${
+          className={`px-4 py-2 text-xs font-bold rounded-[3px] transition-colors border whitespace-nowrap ${
             activeTab === 'diagnostics'
-              ? 'bg-primary/10 border-primary text-white shadow-[0_0_15px_rgba(0,255,136,0.2)]'
-              : 'border-transparent text-dark-muted hover:text-dark-text hover:bg-dark-card/60'
+              ? 'bg-[#FFF7ED] border-[#111111] text-[#111111] border-l-4 border-l-primary'
+              : 'border-transparent text-[#666666] hover:text-[#111111] hover:bg-white hover:border-[#DCDCDC]'
           }`}
         >
           METADATA &amp; DIAGNOSTICS
@@ -403,7 +402,7 @@ export const ReconDetail: React.FC<{
       {activeTab === 'subdomains' && (
         <div className="space-y-4">
           {/* Subdomains Toolbar */}
-          <div className="p-3.5 cyber-panel rounded-xl flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          <div className="p-3.5 bg-white border border-[#DCDCDC] rounded-[3px] flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between shadow-sm">
             <div className="flex-1 max-w-sm">
               <Input
                 placeholder="Search discovered subdomains..."
@@ -432,9 +431,9 @@ export const ReconDetail: React.FC<{
           </div>
 
           {filteredSubdomains.length === 0 ? (
-            <div className="p-8 text-center cyber-panel rounded-xl border-dashed">
-              <p className="text-sm font-bold font-mono text-dark-text uppercase">NO ASSETS DISCOVERED</p>
-              <p className="text-xs text-dark-muted font-mono mt-1">
+            <div className="p-8 text-center bg-white border border-dashed border-[#DCDCDC] rounded-[3px]">
+              <p className="text-sm font-bold font-mono text-[#111111] uppercase">NO ASSETS DISCOVERED</p>
+              <p className="text-xs text-[#666666] font-mono mt-1">
                 {subdomainSearch || statusFilter !== 'all'
                   ? 'No target subdomains match current filter parameters.'
                   : recon.status === 'running'
@@ -444,10 +443,10 @@ export const ReconDetail: React.FC<{
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="overflow-x-auto cyber-panel rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+              <div className="overflow-x-auto bg-white border border-[#DCDCDC] rounded-[3px] shadow-sm">
                 <table className="w-full text-left border-collapse font-mono">
                   <thead>
-                    <tr className="border-b border-dark-border/80 bg-dark-bg/60 text-[11px] font-bold text-dark-muted uppercase tracking-wider">
+                    <tr className="border-b border-[#DCDCDC] bg-[#FAFAFA] text-[11px] font-bold text-[#666666] uppercase tracking-wider">
                       <th className="py-3 px-4">DISCOVERED HOSTNAME</th>
                       <th className="py-3 px-4">ROOT SCOPE</th>
                       <th className="py-3 px-4">DEPTH / ORIGIN</th>
@@ -456,7 +455,7 @@ export const ReconDetail: React.FC<{
                       <th className="py-3 px-4 text-right">TARGET ACTIONS</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-dark-border/50 text-xs">
+                  <tbody className="divide-y divide-[#DCDCDC] text-xs">
                     {paginatedSubdomains.map((sub: SubdomainEntry, idx: number) => {
                       const currentStatus =
                         (recon.domainStatuses && recon.domainStatuses[sub.hostname]) ||
@@ -464,20 +463,20 @@ export const ReconDetail: React.FC<{
                         'new';
 
                       return (
-                        <tr key={`${sub.hostname}-${idx}`} className="hover:bg-primary/5 transition-colors group">
-                          <td className="py-3.5 px-4 font-mono font-bold text-dark-text">
-                            <span className="text-primary group-hover:neon-text-green transition-colors">
+                        <tr key={`${sub.hostname}-${idx}`} className="hover:bg-[#FAFAFA] transition-colors group">
+                          <td className="py-3.5 px-4 font-mono font-bold text-[#111111]">
+                            <span className="text-[#111111] group-hover:text-primary transition-colors">
                               {sub.hostname}
                             </span>
                           </td>
 
-                          <td className="py-3.5 px-4 text-dark-muted font-mono">
+                          <td className="py-3.5 px-4 text-[#666666] font-mono">
                             {sub.rootDomain || '-'}
                           </td>
 
-                          <td className="py-3.5 px-4 text-dark-muted font-mono">
+                          <td className="py-3.5 px-4 text-[#666666] font-mono">
                             {sub.parent ? (
-                              <span className="text-xs text-cyber-cyan font-bold">{sub.parent}</span>
+                              <span className="text-xs text-[#111111] font-bold">{sub.parent}</span>
                             ) : sub.depth ? (
                               `depth: ${sub.depth}`
                             ) : (
@@ -486,7 +485,7 @@ export const ReconDetail: React.FC<{
                           </td>
 
                           <td className="py-3.5 px-4">
-                            <span className="px-2 py-0.5 rounded bg-dark-bg/80 border border-dark-border text-[10px] text-dark-muted uppercase font-mono">
+                            <span className="px-2 py-0.5 rounded-[2px] bg-[#FAFAFA] border border-[#DCDCDC] text-[10px] text-[#666666] uppercase font-mono font-bold">
                               {sub.source || 'enumeration'}
                             </span>
                           </td>
@@ -510,9 +509,8 @@ export const ReconDetail: React.FC<{
 
                           <td className="py-3.5 px-4 text-right whitespace-nowrap">
                             <div className="flex items-center justify-end gap-1.5 font-mono">
-                              {/* Targeted Hunt Button */}
                               <Button
-                                variant="outline"
+                                variant="secondary"
                                 size="sm"
                                 onClick={() =>
                                   setHuntTargetModal({
@@ -553,34 +551,34 @@ export const ReconDetail: React.FC<{
 
       {/* Tab 2: Relationships */}
       {activeTab === 'relationships' && (
-        <div className="p-6 cyber-panel rounded-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-dark-border/80 font-mono">
+        <div className="p-6 bg-white border border-[#DCDCDC] rounded-[3px] space-y-4 shadow-sm">
+          <div className="flex items-center justify-between pb-3 border-b border-[#DCDCDC] font-mono">
             <div>
-              <h3 className="text-sm font-bold text-white tracking-wider uppercase">
+              <h3 className="text-sm font-bold text-[#111111] tracking-wider uppercase">
                 &gt; PARENT-CHILD TOPOLOGY GRAPH
               </h3>
-              <p className="text-xs text-dark-muted font-sans mt-0.5">
+              <p className="text-xs text-[#666666] font-sans mt-0.5">
                 Hierarchical relationships reconstructed from Subfinder discoveries.
               </p>
             </div>
-            <span className="text-xs text-primary font-mono font-bold bg-primary/10 px-2.5 py-1 rounded border border-primary/30">
+            <span className="text-xs text-[#111111] font-mono font-bold bg-[#FFF7ED] px-2.5 py-1 rounded-[2px] border border-primary">
               {(recon.relationships || []).length} EDGES
             </span>
           </div>
 
           {(recon.relationships || []).length === 0 ? (
-            <p className="text-xs font-mono text-dark-muted py-8 text-center">
+            <p className="text-xs font-mono text-[#666666] py-8 text-center">
               NO RELATIONAL TOPOLOGY EDGES RECORDED FOR THIS CAMPAIGN.
             </p>
           ) : (
-            <div className="divide-y divide-dark-border/50 max-h-96 overflow-y-auto font-mono text-xs pr-2">
+            <div className="divide-y divide-[#DCDCDC] max-h-96 overflow-y-auto font-mono text-xs pr-2">
               {(recon.relationships || []).map((rel, idx) => (
                 <div key={idx} className="py-2.5 flex items-center gap-3">
-                  <span className="text-dark-muted bg-dark-bg/90 px-2.5 py-1 rounded border border-dark-border font-semibold">
+                  <span className="text-[#111111] bg-[#FAFAFA] px-2.5 py-1 rounded-[2px] border border-[#DCDCDC] font-semibold">
                     {rel.parent}
                   </span>
-                  <span className="text-primary font-bold neon-text-green">──►</span>
-                  <span className="text-primary bg-dark-bg/90 px-2.5 py-1 rounded border border-primary/30 font-bold shadow-[0_0_8px_rgba(0,255,136,0.15)]">
+                  <span className="text-primary font-bold">──►</span>
+                  <span className="text-[#111111] bg-[#FFF7ED] px-2.5 py-1 rounded-[2px] border border-primary font-bold">
                     {rel.child}
                   </span>
                 </div>
@@ -592,39 +590,39 @@ export const ReconDetail: React.FC<{
 
       {/* Tab 3: Diagnostics */}
       {activeTab === 'diagnostics' && (
-        <div className="p-6 cyber-panel rounded-xl space-y-4 font-mono">
-          <div className="pb-3 border-b border-dark-border/80">
-            <h3 className="text-sm font-bold text-white tracking-wider uppercase">
+        <div className="p-6 bg-white border border-[#DCDCDC] rounded-[3px] space-y-4 font-mono shadow-sm">
+          <div className="pb-3 border-b border-[#DCDCDC]">
+            <h3 className="text-sm font-bold text-[#111111] tracking-wider uppercase">
               &gt; SCAN DIAGNOSTICS &amp; ENGINE STATE
             </h3>
-            <p className="text-xs text-dark-muted font-sans mt-0.5">
+            <p className="text-xs text-[#666666] font-sans mt-0.5">
               Exact backend metadata registered in {recon.database}.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
-            <div className="p-4 bg-dark-bg/90 rounded-lg border border-dark-border space-y-2">
-              <span className="text-primary font-bold block border-b border-dark-border/60 pb-1">
+            <div className="p-4 bg-[#FAFAFA] rounded-[3px] border border-[#DCDCDC] space-y-2">
+              <span className="text-primary font-bold block border-b border-[#DCDCDC] pb-1">
                 // SCAN WINDOW
               </span>
-              <p>STARTED: <span className="text-dark-text">{recon.scan?.startedAt || 'None'}</span></p>
-              <p>COMPLETED: <span className="text-dark-text">{recon.scan?.completedAt || 'None'}</span></p>
-              <p>LAST ACCESS: <span className="text-dark-text">{recon.lastUsedAt}</span></p>
+              <p>STARTED: <span className="text-[#111111] font-bold">{recon.scan?.startedAt || 'None'}</span></p>
+              <p>COMPLETED: <span className="text-[#111111] font-bold">{recon.scan?.completedAt || 'None'}</span></p>
+              <p>LAST ACCESS: <span className="text-[#111111]">{recon.lastUsedAt}</span></p>
             </div>
-            <div className="p-4 bg-dark-bg/90 rounded-lg border border-dark-border space-y-2">
-              <span className="text-cyber-cyan font-bold block border-b border-dark-border/60 pb-1">
+            <div className="p-4 bg-[#FAFAFA] rounded-[3px] border border-[#DCDCDC] space-y-2">
+              <span className="text-primary font-bold block border-b border-[#DCDCDC] pb-1">
                 // ENGINE TELEMETRY
               </span>
-              <p>STATUS: <span className="text-primary font-bold">{recon.status}</span></p>
-              <p>ERROR TRACES: <span className="text-danger">{recon.scan?.errors?.length || 0}</span></p>
-              <p>ASSETS COUNT: <span className="text-dark-text font-bold">{recon.subdomainCount}</span></p>
+              <p>STATUS: <span className="text-[#111111] font-bold">{recon.status}</span></p>
+              <p>ERROR TRACES: <span className="text-danger font-bold">{recon.scan?.errors?.length || 0}</span></p>
+              <p>ASSETS COUNT: <span className="text-[#111111] font-bold">{recon.subdomainCount}</span></p>
             </div>
           </div>
 
           {(recon.scan?.errors?.length || 0) > 0 && (
             <div className="space-y-1.5 pt-2">
               <span className="text-xs font-bold text-danger">// ERROR LOG STREAM:</span>
-              <pre className="p-3.5 rounded-lg bg-dark-bg/90 border border-danger/40 text-xs text-danger font-mono overflow-x-auto whitespace-pre-wrap shadow-[0_0_15px_rgba(255,42,95,0.2)]">
+              <pre className="p-3.5 rounded-[3px] bg-danger-light border border-danger/40 text-xs text-danger font-mono overflow-x-auto whitespace-pre-wrap">
                 {recon.scan.errors.join('\n')}
               </pre>
             </div>
@@ -641,14 +639,14 @@ export const ReconDetail: React.FC<{
         maxWidth="md"
       >
         <div className="space-y-4 text-xs font-mono">
-          <div className="p-3 bg-dark-bg/90 rounded-lg border border-primary/30 flex items-center justify-between">
-            <span className="text-dark-muted">TARGET HOST:</span>
-            <strong className="text-primary neon-text-green text-sm">{huntTargetModal.hostname}</strong>
+          <div className="p-3 bg-[#FAFAFA] rounded-[3px] border border-[#DCDCDC] flex items-center justify-between">
+            <span className="text-[#666666]">TARGET HOST:</span>
+            <strong className="text-[#111111] text-sm">{huntTargetModal.hostname}</strong>
           </div>
 
-          <div className="p-3.5 rounded-lg bg-dark-bg/80 border border-dark-border text-dark-muted font-sans leading-relaxed">
-            This dispatches the backend <code className="text-primary font-mono">POST /subsrecon/:id/hunt-subdomains</code> endpoint.
-            Subfinder queries all configured DNS search providers for child branches under <code className="text-primary font-mono">.{huntTargetModal.hostname}</code>.
+          <div className="p-3.5 rounded-[3px] bg-[#FAFAFA] border border-[#DCDCDC] text-[#666666] font-sans leading-relaxed">
+            This dispatches the backend <code className="text-primary font-mono font-bold">POST /subsrecon/:id/hunt-subdomains</code> endpoint.
+            Subfinder queries all configured DNS search providers for child branches under <code className="text-primary font-mono font-bold">.{huntTargetModal.hostname}</code>.
           </div>
 
           <div className="flex justify-end gap-2.5 pt-2">
@@ -687,4 +685,5 @@ export const ReconDetail: React.FC<{
     </div>
   );
 };
+
 export default ReconDetail;

@@ -70,35 +70,35 @@ export const Dashboard: React.FC = () => {
     switch (status) {
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-primary/10 text-primary border border-primary/40 shadow-[0_0_10px_rgba(0,255,136,0.2)]">
-            <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-success-light text-success border border-[#BBF7D0]">
+            <CheckCircle2 className="w-3.5 h-3.5" />
             COMPLETED
           </span>
         );
       case 'running':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/40 animate-pulse shadow-[0_0_12px_rgba(0,240,255,0.25)]">
-            <Activity className="w-3.5 h-3.5 animate-spin text-cyber-cyan" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-[#FFF7ED] text-primary border border-primary/40">
+            <Activity className="w-3.5 h-3.5 animate-spin text-primary" />
             SCANNING
           </span>
         );
       case 'failed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-danger/15 text-danger border border-danger/40 shadow-[0_0_10px_rgba(255,42,95,0.2)]">
-            <XCircle className="w-3.5 h-3.5 text-danger" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-danger-light text-danger border border-[#FECACA]">
+            <XCircle className="w-3.5 h-3.5" />
             FAILED
           </span>
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-warning/15 text-warning border border-warning/40">
-            <Clock className="w-3.5 h-3.5 text-warning" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-[#FFF7ED] text-primary border border-primary/40">
+            <Clock className="w-3.5 h-3.5 text-primary" />
             QUEUED
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-dark-border/40 text-dark-muted border border-dark-border">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-medium bg-[#FAFAFA] text-[#666666] border border-[#DCDCDC]">
             <AlertTriangle className="w-3.5 h-3.5" />
             {status}
           </span>
@@ -107,18 +107,18 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 font-sans">
+    <div className="space-y-6 font-sans">
       {/* Top Banner / Actions Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-dark-border/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DCDCDC]">
         <div>
           <div className="flex items-center gap-2 font-mono text-xs text-primary mb-1">
-            <Radio className="w-3.5 h-3.5 animate-pulse" />
-            <span>RADAR_TELEMETRY // LIVE INTELLIGENCE</span>
+            <Radio className="w-3.5 h-3.5" />
+            <span className="font-bold">RADAR_TELEMETRY // LIVE INTELLIGENCE</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-tech font-bold text-white tracking-wider uppercase">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#111111] tracking-tight uppercase">
             ATTACK SURFACE COMMAND
           </h2>
-          <p className="text-xs text-dark-muted font-mono mt-0.5">
+          <p className="text-xs text-[#666666] font-mono mt-0.5">
             Real-time passive &amp; active asset discovery synchronized with local SubsRecon core.
           </p>
         </div>
@@ -147,110 +147,110 @@ export const Dashboard: React.FC = () => {
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Campaigns */}
-        <div className="p-5 cyber-panel rounded-xl hover:border-primary/50 transition-all duration-300 relative cyber-corners group">
+        <div className="p-5 bg-white border border-[#DCDCDC] rounded-[3px] hover:border-[#111111] transition-colors relative group shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-dark-muted group-hover:text-primary transition-colors">
+            <span className="text-[12px] font-mono font-bold uppercase tracking-wider text-[#666666]">
               TARGET CAMPAIGNS
             </span>
-            <div className="p-2 rounded-lg bg-primary/10 border border-primary/30 text-primary shadow-[0_0_10px_rgba(0,255,136,0.2)]">
+            <div className="p-2 rounded-[3px] bg-[#FFF7ED] border border-primary/30 text-primary">
               <Crosshair className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-tech font-extrabold text-white neon-text-green">
+            <span className="text-2xl sm:text-3xl font-bold text-[#111111]">
               {totalCampaigns}
             </span>
             {runningCampaigns > 0 && (
-              <span className="text-xs font-mono text-cyber-cyan font-bold animate-pulse">
+              <span className="text-xs font-mono text-primary font-bold">
                 [{runningCampaigns} ACTIVE]
               </span>
             )}
           </div>
-          <p className="text-[11px] font-mono text-dark-muted mt-1.5 flex items-center gap-1.5">
+          <p className="text-[11px] font-mono text-[#666666] mt-2 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
             Stored records in LowDB engine
           </p>
         </div>
 
         {/* Root Domains */}
-        <div className="p-5 cyber-panel rounded-xl hover:border-cyber-cyan/50 transition-all duration-300 relative cyber-corners group">
+        <div className="p-5 bg-white border border-[#DCDCDC] rounded-[3px] hover:border-[#111111] transition-colors relative group shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-dark-muted group-hover:text-cyber-cyan transition-colors">
+            <span className="text-[12px] font-mono font-bold uppercase tracking-wider text-[#666666]">
               SCOPE ROOT DOMAINS
             </span>
-            <div className="p-2 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan shadow-[0_0_10px_rgba(0,240,255,0.2)]">
+            <div className="p-2 rounded-[3px] bg-[#FFF7ED] border border-primary/30 text-primary">
               <Globe className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-tech font-extrabold text-white neon-text-cyan">
+            <span className="text-2xl sm:text-3xl font-bold text-[#111111]">
               {totalRootDomains}
             </span>
           </div>
-          <p className="text-[11px] font-mono text-dark-muted mt-1.5 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyber-cyan" />
+          <p className="text-[11px] font-mono text-[#666666] mt-2 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary" />
             Target perimeter domains authorized
           </p>
         </div>
 
         {/* Subdomains Discovered */}
-        <div className="p-5 cyber-panel rounded-xl hover:border-primary/50 transition-all duration-300 relative cyber-corners group">
+        <div className="p-5 bg-white border border-[#DCDCDC] rounded-[3px] hover:border-[#111111] transition-colors relative group shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-dark-muted group-hover:text-primary transition-colors">
+            <span className="text-[12px] font-mono font-bold uppercase tracking-wider text-[#666666]">
               DISCOVERED ASSETS
             </span>
-            <div className="p-2 rounded-lg bg-primary/10 border border-primary/30 text-primary shadow-[0_0_10px_rgba(0,255,136,0.2)]">
+            <div className="p-2 rounded-[3px] bg-[#FFF7ED] border border-primary/30 text-primary">
               <Network className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <span className="text-3xl font-tech font-extrabold text-white neon-text-green">
+            <span className="text-2xl sm:text-3xl font-bold text-primary">
               {totalSubdomains}
             </span>
           </div>
-          <p className="text-[11px] font-mono text-dark-muted mt-1.5 flex items-center gap-1.5">
+          <p className="text-[11px] font-mono text-[#666666] mt-2 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
             Identified hosts &amp; attack surfaces
           </p>
         </div>
 
         {/* Completed vs Failed */}
-        <div className="p-5 cyber-panel rounded-xl hover:border-warning/50 transition-all duration-300 relative cyber-corners group">
+        <div className="p-5 bg-white border border-[#DCDCDC] rounded-[3px] hover:border-[#111111] transition-colors relative group shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-dark-muted group-hover:text-warning transition-colors">
+            <span className="text-[12px] font-mono font-bold uppercase tracking-wider text-[#666666]">
               SCAN RESOLUTIONS
             </span>
-            <div className="p-2 rounded-lg bg-warning/10 border border-warning/30 text-warning shadow-[0_0_10px_rgba(255,176,0,0.2)]">
+            <div className="p-2 rounded-[3px] bg-[#FFF7ED] border border-primary/30 text-primary">
               <Cpu className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3 flex items-center gap-3 font-mono">
-            <span className="text-sm text-primary font-bold">
+            <span className="text-sm text-success font-bold">
               ✓ {completedCampaigns} DONE
             </span>
             <span className="text-sm text-danger font-bold">
               ✕ {failedCampaigns} FAILED
             </span>
           </div>
-          <p className="text-[11px] font-mono text-dark-muted mt-1.5">
+          <p className="text-[11px] font-mono text-[#666666] mt-2">
             {runningCampaigns > 0 ? `${runningCampaigns} background processes scanning` : 'All background threads idle'}
           </p>
         </div>
       </div>
 
       {/* Recent Activity Section */}
-      <div className="cyber-panel rounded-xl p-5 sm:p-6 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-dark-border/80">
+      <div className="bg-white border border-[#DCDCDC] rounded-[3px] p-5 sm:p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#DCDCDC]">
           <div className="flex items-center gap-2.5 font-mono">
-            <Radar className="w-4 h-4 text-primary animate-radar-sweep" />
-            <h3 className="text-xs sm:text-sm font-bold text-white tracking-wider uppercase">
+            <Radar className="w-4 h-4 text-primary" />
+            <h3 className="text-xs sm:text-sm font-bold text-[#111111] tracking-wider uppercase">
               RECENT TARGET CAMPAIGNS
             </h3>
           </div>
           {allRecons.length > 0 && (
             <Link
               to="/recons"
-              className="text-xs font-mono font-bold text-primary hover:text-primary-light flex items-center gap-1 transition-colors hover:underline"
+              className="text-xs font-mono font-bold text-primary hover:text-primary-hover flex items-center gap-1 transition-colors hover:underline"
             >
               <span>VIEW_ALL_CAMPAIGNS</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -269,7 +269,7 @@ export const Dashboard: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left font-mono">
               <thead>
-                <tr className="border-b border-dark-border/80 text-[11px] text-dark-muted uppercase tracking-wider">
+                <tr className="border-b border-[#DCDCDC] bg-[#FAFAFA] text-[11px] font-bold text-[#666666] uppercase tracking-wider">
                   <th className="py-3 px-3">CAMPAIGN TARGET</th>
                   <th className="py-3 px-3">STATUS</th>
                   <th className="py-3 px-3">ROOT SCOPE</th>
@@ -278,7 +278,7 @@ export const Dashboard: React.FC = () => {
                   <th className="py-3 px-3 text-right">ACTION</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-dark-border/50 text-xs">
+              <tbody className="divide-y divide-[#DCDCDC] text-xs">
                 {recentRecons.map((recon) => {
                   const rootCount =
                     typeof recon.domainCount === 'number'
@@ -289,29 +289,29 @@ export const Dashboard: React.FC = () => {
                   return (
                     <tr
                       key={recon.id}
-                      className="hover:bg-primary/5 transition-colors group cursor-pointer"
+                      className="hover:bg-[#FAFAFA] transition-colors group cursor-pointer"
                       onClick={() => navigate(`/recons/${recon.id}`)}
                     >
                       <td className="py-3.5 px-3">
-                        <div className="font-bold text-dark-text group-hover:text-primary transition-colors flex items-center gap-2">
-                          <Terminal className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+                        <div className="font-bold text-[#111111] group-hover:text-primary transition-colors flex items-center gap-2">
+                          <Terminal className="w-3.5 h-3.5 text-primary shrink-0" />
                           <span className="truncate max-w-[180px] sm:max-w-xs">{recon.name}</span>
                         </div>
-                        <div className="text-[10px] text-dark-muted font-sans truncate max-w-[180px] sm:max-w-xs">
+                        <div className="text-[11px] text-[#666666] font-sans truncate max-w-[180px] sm:max-w-xs">
                           Report: {recon.reportTo}
                         </div>
                       </td>
                       <td className="py-3.5 px-3 whitespace-nowrap">
                         {getStatusBadge(recon.status)}
                       </td>
-                      <td className="py-3.5 px-3 whitespace-nowrap text-dark-muted">
-                        <span className="font-bold text-dark-text">{rootCount}</span> roots
+                      <td className="py-3.5 px-3 whitespace-nowrap text-[#666666]">
+                        <span className="font-bold text-[#111111]">{rootCount}</span> roots
                       </td>
                       <td className="py-3.5 px-3 whitespace-nowrap">
-                        <span className="font-bold text-primary neon-text-green">{subCount}</span>
-                        <span className="text-[10px] text-dark-muted ml-1">subdomains</span>
+                        <span className="font-bold text-primary">{subCount}</span>
+                        <span className="text-[11px] text-[#666666] ml-1">subdomains</span>
                       </td>
-                      <td className="py-3.5 px-3 whitespace-nowrap text-[11px] text-dark-muted">
+                      <td className="py-3.5 px-3 whitespace-nowrap text-[11px] text-[#666666]">
                         {recon.createdAt ? (
                           formatDistanceToNow(parseISO(recon.createdAt), { addSuffix: true })
                         ) : (
@@ -342,4 +342,5 @@ export const Dashboard: React.FC = () => {
     </div>
   );
 };
+
 export default Dashboard;

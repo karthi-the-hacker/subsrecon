@@ -21,15 +21,15 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col items-center justify-center p-8 text-center bg-dark-card/40 border border-dashed border-dark-border/80 rounded-xl relative overflow-hidden backdrop-blur-md cyber-corners ${className}`}
+      className={`flex flex-col items-center justify-center p-8 text-center bg-white border border-dashed border-[#DCDCDC] rounded-[3px] relative overflow-hidden ${className}`}
     >
-      <div className="w-14 h-14 rounded-xl bg-dark-bg/80 border border-primary/30 flex items-center justify-center text-primary mb-3 shadow-[0_0_20px_rgba(0,255,136,0.15)]">
+      <div className="w-12 h-12 rounded-[3px] bg-[#FAFAFA] border border-[#DCDCDC] flex items-center justify-center text-primary mb-3">
         <Icon className="w-6 h-6 text-primary" />
       </div>
-      <h3 className="text-sm sm:text-base font-bold font-mono text-dark-text tracking-wide uppercase">
+      <h3 className="text-sm sm:text-base font-bold font-mono text-[#111111] tracking-wider uppercase">
         {title}
       </h3>
-      {description && <p className="text-xs text-dark-muted mt-1 max-w-sm font-sans">{description}</p>}
+      {description && <p className="text-xs text-[#666666] mt-1 max-w-sm font-sans">{description}</p>}
       {actionLabel && onAction && (
         <div className="mt-4">
           <Button variant="primary" size="sm" onClick={onAction}>
@@ -40,3 +40,5 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
     </div>
   );
 };
+
+export default EmptyState;

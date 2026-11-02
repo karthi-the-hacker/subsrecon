@@ -59,17 +59,17 @@ export const Pagination: React.FC<PaginationProps> = ({
     <nav
       role="navigation"
       aria-label="Pagination Navigation"
-      className={`flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-dark-card/80 backdrop-blur-md border border-dark-border/80 rounded-xl text-xs font-mono text-dark-muted ${className}`}
+      className={`flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-2.5 bg-white border border-[#DCDCDC] rounded-[3px] text-xs font-mono text-[#666666] ${className}`}
     >
       <div className="flex items-center gap-3">
         <span>
-          SHOWING <span className="font-bold text-primary">{startItem}</span> -{' '}
-          <span className="font-bold text-primary">{endItem}</span> OF{' '}
-          <span className="font-bold text-dark-text">{totalItems}</span> NODES
+          SHOWING <strong className="text-[#111111]">{startItem}</strong> -{' '}
+          <strong className="text-[#111111]">{endItem}</strong> OF{' '}
+          <strong className="text-[#111111]">{totalItems}</strong> NODES
         </span>
 
         {onPageSizeChange && (
-          <div className="flex items-center gap-1.5 ml-2 border-l border-dark-border/80 pl-3">
+          <div className="flex items-center gap-1.5 ml-2 border-l border-[#DCDCDC] pl-3">
             <span>PER_PAGE:</span>
             <div className="w-20">
               <Select<number>
@@ -87,7 +87,7 @@ export const Pagination: React.FC<PaginationProps> = ({
 
       <div className="flex items-center gap-1">
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={() => onPageChange(safeCurrentPage - 1)}
           disabled={safeCurrentPage <= 1}
@@ -100,7 +100,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         <div className="flex items-center gap-1">
           {pages.map((p, idx) =>
             p === 'ellipsis' ? (
-              <span key={`ellipsis-${idx}`} className="px-2 py-1 text-dark-muted">
+              <span key={`ellipsis-${idx}`} className="px-2 py-1 text-[#888888]">
                 ...
               </span>
             ) : (
@@ -108,10 +108,10 @@ export const Pagination: React.FC<PaginationProps> = ({
                 key={p}
                 onClick={() => onPageChange(p)}
                 aria-current={p === safeCurrentPage ? 'page' : undefined}
-                className={`min-w-[28px] h-7 px-2 rounded font-mono font-bold text-xs transition-all ${
+                className={`min-w-[28px] h-7 px-2 rounded-[2px] font-mono font-bold text-xs transition-colors ${
                   p === safeCurrentPage
-                    ? 'bg-primary text-dark-bg font-extrabold shadow-[0_0_10px_rgba(0,255,136,0.6)]'
-                    : 'text-dark-muted hover:text-primary hover:bg-primary/10 border border-transparent hover:border-primary/30'
+                    ? 'bg-primary text-[#111111] border border-[#111111]'
+                    : 'bg-white text-[#111111] border border-[#DCDCDC] hover:border-primary hover:text-primary hover:bg-[#FFF7ED]'
                 }`}
               >
                 {p}
@@ -121,7 +121,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         </div>
 
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
           onClick={() => onPageChange(safeCurrentPage + 1)}
           disabled={safeCurrentPage >= totalPages}
@@ -134,3 +134,5 @@ export const Pagination: React.FC<PaginationProps> = ({
     </nav>
   );
 };
+
+export default Pagination;

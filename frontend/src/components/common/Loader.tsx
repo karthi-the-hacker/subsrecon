@@ -9,31 +9,30 @@ export interface LoaderProps {
 
 export const Loader: React.FC<LoaderProps> = ({ size = 'md', text, className = '' }) => {
   const sizeStyles = {
-    sm: 'w-5 h-5',
-    md: 'w-9 h-9',
-    lg: 'w-14 h-14',
+    sm: 'w-4 h-4',
+    md: 'w-7 h-7',
+    lg: 'w-10 h-10',
   };
 
   return (
     <div
       role="status"
       aria-live="polite"
-      className={`flex flex-col items-center justify-center p-6 text-dark-muted font-mono ${className}`}
+      className={`flex flex-col items-center justify-center p-6 text-[#666666] font-mono ${className}`}
     >
       <div className="relative flex items-center justify-center">
-        {/* Outer pulse ring */}
-        <div className="absolute inset-0 rounded-full border border-primary/30 animate-ping" />
-        {/* Inner rotating radar */}
-        <div className="rounded-full bg-primary/10 border border-primary/50 p-3 shadow-[0_0_20px_rgba(0,255,136,0.3)]">
+        <div className="rounded-[3px] bg-white border border-[#111111] p-3 shadow-sm">
           <Radar className={`${sizeStyles[size]} text-primary animate-radar-sweep`} />
         </div>
       </div>
       {text && (
-        <p className="text-xs font-mono font-semibold mt-4 text-primary/90 tracking-widest uppercase flex items-center gap-1.5">
-          <span className="animate-pulse">&gt;</span> {text}
+        <p className="text-xs font-mono font-bold mt-3 text-[#111111] tracking-widest uppercase flex items-center gap-1.5">
+          <span className="text-primary">&gt;</span> {text}
         </p>
       )}
       <span className="sr-only">Loading cyber reconnaissance data...</span>
     </div>
   );
 };
+
+export default Loader;

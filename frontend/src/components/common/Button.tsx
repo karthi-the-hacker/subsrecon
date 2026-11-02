@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    'inline-flex items-center justify-center font-mono font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-dark-bg disabled:opacity-50 disabled:cursor-not-allowed select-none tracking-wide relative overflow-hidden';
+    'inline-flex items-center justify-center font-mono font-bold rounded-[3px] transition-colors duration-150 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed select-none tracking-wider uppercase';
 
   const sizeStyles = {
     sm: 'text-xs px-3 py-1.5 gap-1.5',
@@ -31,17 +31,17 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      'bg-primary text-dark-bg font-bold hover:bg-primary-hover border border-primary shadow-[0_0_15px_rgba(0,255,136,0.35)] hover:shadow-[0_0_25px_rgba(0,255,136,0.6)] focus:ring-primary',
+      'bg-primary text-[#111111] border border-[#111111] hover:bg-primary-hover hover:border-[#111111] active:bg-[#CC6100]',
     secondary:
-      'bg-dark-card/90 text-dark-text border border-dark-border hover:border-primary/40 hover:bg-dark-card focus:ring-primary backdrop-blur-md',
+      'bg-white text-[#111111] border border-[#111111] hover:text-primary hover:border-primary hover:bg-[#FFF7ED] active:bg-[#FFEDD5]',
     danger:
-      'bg-danger text-white hover:bg-danger-hover border border-danger/80 shadow-[0_0_15px_rgba(255,42,95,0.35)] hover:shadow-[0_0_25px_rgba(255,42,95,0.5)] focus:ring-danger',
+      'bg-danger text-white border border-[#111111] hover:bg-danger-hover active:bg-[#991B1B]',
     outline:
-      'border border-primary/50 text-primary hover:bg-primary/10 hover:border-primary shadow-[0_0_10px_rgba(0,255,136,0.15)] focus:ring-primary backdrop-blur-sm',
+      'bg-transparent text-[#111111] border border-[#111111] hover:text-primary hover:border-primary hover:bg-[#FFF7ED]',
     ghost:
-      'text-dark-muted hover:text-primary hover:bg-primary/5 border border-transparent hover:border-primary/20 focus:ring-primary',
+      'bg-transparent text-[#111111] border border-transparent hover:text-primary hover:bg-[#FFF7ED]',
     cyber:
-      'bg-cyber-cyan/15 text-cyber-cyan hover:bg-cyber-cyan/25 border border-cyber-cyan/60 shadow-[0_0_15px_rgba(0,240,255,0.25)] hover:shadow-[0_0_25px_rgba(0,240,255,0.45)] focus:ring-cyber-cyan',
+      'bg-[#FFF7ED] text-[#111111] border border-primary hover:bg-primary hover:text-[#111111]',
   };
 
   return (
@@ -51,12 +51,14 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading ? (
-        <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+        <Loader2 className="w-4 h-4 animate-spin text-current" aria-hidden="true" />
       ) : (
         leftIcon
       )}
-      <span>{children}</span>
+      {children && <span>{children}</span>}
       {!isLoading && rightIcon}
     </button>
   );
 };
+
+export default Button;

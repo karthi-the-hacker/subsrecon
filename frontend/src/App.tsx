@@ -22,7 +22,7 @@ export const App: React.FC = () => {
         <BrowserRouter>
           <AppRoutes />
           <ToastContainer
-            theme="dark"
+            theme="light"
             position="bottom-right"
             autoClose={3500}
             hideProgressBar={false}
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
             closeOnClick
             pauseOnHover
             limit={4}
-            toastClassName="bg-dark-card border border-dark-border text-dark-text text-xs"
+            toastClassName="bg-white border border-[#111111] text-[#111111] text-xs font-mono shadow-md rounded-[3px]"
           />
         </BrowserRouter>
       </AuthProvider>

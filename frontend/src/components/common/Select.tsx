@@ -51,37 +51,37 @@ export interface CustomSelectProps<T = string | number, IsMulti extends boolean 
   portal?: boolean;
 }
 
-// Badge color mappings for triage status and indicators
+// Badge color mappings for triage status and indicators matching Attack Surface theme
 const BADGE_STYLES: Record<string, { bg: string; border: string; text: string; dot: string }> = {
   success: {
-    bg: 'rgba(0, 255, 136, 0.15)',
-    border: 'rgba(0, 255, 136, 0.45)',
-    text: '#00FF88',
-    dot: '#00FF88',
+    bg: '#DCFCE7',
+    border: '#16A34A',
+    text: '#16A34A',
+    dot: '#16A34A',
   },
   warning: {
-    bg: 'rgba(255, 176, 0, 0.15)',
-    border: 'rgba(255, 176, 0, 0.45)',
-    text: '#FFB000',
-    dot: '#FFB000',
+    bg: '#FFF7ED',
+    border: '#FF7900',
+    text: '#E66D00',
+    dot: '#FF7900',
   },
   danger: {
-    bg: 'rgba(255, 42, 95, 0.15)',
-    border: 'rgba(255, 42, 95, 0.45)',
-    text: '#FF2A5F',
-    dot: '#FF2A5F',
+    bg: '#FEE2E2',
+    border: '#DC2626',
+    text: '#DC2626',
+    dot: '#DC2626',
   },
   muted: {
-    bg: 'rgba(9, 18, 36, 0.85)',
-    border: '#152542',
-    text: '#64748B',
-    dot: '#64748B',
+    bg: '#FAFAFA',
+    border: '#DCDCDC',
+    text: '#666666',
+    dot: '#888888',
   },
   default: {
-    bg: 'rgba(9, 18, 36, 0.85)',
-    border: '#152542',
-    text: '#E6F4F1',
-    dot: '#00FF88',
+    bg: '#FFFFFF',
+    border: '#DCDCDC',
+    text: '#111111',
+    dot: '#FF7900',
   },
 };
 
@@ -91,8 +91,8 @@ const DropdownIndicator = <T, IsMulti extends boolean>(
   return (
     <components.DropdownIndicator {...props}>
       <ChevronDown
-        className={`w-3.5 h-3.5 text-dark-muted transition-transform duration-200 ${
-          props.selectProps.menuIsOpen ? 'rotate-180 text-dark-text' : ''
+        className={`w-3.5 h-3.5 text-[#666666] transition-transform duration-150 ${
+          props.selectProps.menuIsOpen ? 'rotate-180 text-[#111111]' : ''
         }`}
       />
     </components.DropdownIndicator>
@@ -119,10 +119,10 @@ const CustomOption = <T, IsMulti extends boolean>(
           )}
           <span className="truncate">{data.label}</span>
           {data.description && (
-            <span className="text-[10px] text-dark-muted truncate">({data.description})</span>
+            <span className="text-[10px] text-[#666666] truncate">({data.description})</span>
           )}
         </div>
-        {isSelected && <Check className="w-3.5 h-3.5 text-primary shrink-0 ml-2" />}
+        {isSelected && <Check className="w-3.5 h-3.5 text-[#111111] shrink-0 ml-2" />}
       </div>
     </components.Option>
   );
@@ -255,13 +255,13 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
   const styles: StylesConfig<SelectOption<T>, IsMulti, GroupBase<SelectOption<T>>> = useMemo(() => {
     return {
       control: (base, state) => {
-        let bg = 'rgba(9, 18, 36, 0.85)';
-        let borderColor = error ? '#FF2A5F' : state.isFocused ? '#00FF88' : '#152542';
-        let textColor = '#E6F4F1';
+        let bg = '#FFFFFF';
+        let borderColor = error ? '#DC2626' : state.isFocused ? '#FF7900' : '#DCDCDC';
+        let textColor = '#111111';
 
         if (variant === 'badge' && currentBadgeStyle) {
           bg = currentBadgeStyle.bg;
-          borderColor = state.isFocused ? '#00FF88' : currentBadgeStyle.border;
+          borderColor = state.isFocused ? '#FF7900' : currentBadgeStyle.border;
           textColor = currentBadgeStyle.text;
         }
 
@@ -269,55 +269,50 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
           ...base,
           backgroundColor: bg,
           borderColor: borderColor,
-          borderRadius: isSmall ? '6px' : '8px',
-          minHeight: isSmall ? '28px' : '38px',
-          height: isSmall ? '28px' : '38px',
-          fontSize: isSmall ? '12px' : '14px',
-          fontFamily: 'JetBrains Mono, monospace',
-          fontWeight: variant === 'badge' ? 600 : 400,
+          borderRadius: isSmall ? '2px' : '3px',
+          minHeight: isSmall ? '28px' : '36px',
+          height: isSmall ? '28px' : '36px',
+          fontSize: isSmall ? '12px' : '13px',
+          fontFamily: '"Space Grotesk", "JetBrains Mono", monospace',
+          fontWeight: variant === 'badge' ? 600 : 500,
           color: textColor,
-          boxShadow: state.isFocused
-            ? error
-              ? '0 0 0 1px #FF2A5F, 0 0 10px rgba(255, 42, 95, 0.3)'
-              : '0 0 0 1px #00FF88, 0 0 10px rgba(0, 255, 136, 0.3)'
-            : 'none',
+          boxShadow: 'none',
           '&:hover': {
             borderColor: state.isFocused
-              ? '#00FF88'
+              ? '#FF7900'
               : variant === 'badge' && currentBadgeStyle
               ? currentBadgeStyle.border
-              : '#223B68',
+              : '#111111',
           },
           cursor: effectiveDisabled ? 'not-allowed' : 'pointer',
           opacity: effectiveDisabled ? 0.5 : 1,
-          transition: 'all 0.15s ease-in-out',
+          transition: 'border-color 0.15s ease-in-out',
         };
       },
       valueContainer: (base) => ({
         ...base,
         padding: isSmall ? '0 6px' : '0 10px',
-        height: isSmall ? '26px' : '36px',
+        height: isSmall ? '26px' : '34px',
         display: 'flex',
         alignItems: 'center',
       }),
       singleValue: (base) => ({
         ...base,
-        color: variant === 'badge' && currentBadgeStyle ? currentBadgeStyle.text : '#F8FAFC',
-        fontSize: isSmall ? '12px' : '14px',
-        fontWeight: variant === 'badge' ? 500 : 400,
+        color: variant === 'badge' && currentBadgeStyle ? currentBadgeStyle.text : '#111111',
+        fontSize: isSmall ? '12px' : '13px',
+        fontWeight: variant === 'badge' ? 600 : 500,
         margin: 0,
       }),
       placeholder: (base) => ({
         ...base,
-        color: '#94A3B8',
-        opacity: 0.6,
-        fontSize: isSmall ? '12px' : '14px',
+        color: '#888888',
+        fontSize: isSmall ? '12px' : '13px',
         margin: 0,
       }),
       input: (base) => ({
         ...base,
-        color: '#F8FAFC',
-        fontSize: isSmall ? '12px' : '14px',
+        color: '#111111',
+        fontSize: isSmall ? '12px' : '13px',
         margin: 0,
         padding: 0,
       }),
@@ -326,22 +321,22 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
       }),
       indicatorsContainer: (base) => ({
         ...base,
-        height: isSmall ? '26px' : '36px',
+        height: isSmall ? '26px' : '34px',
       }),
       dropdownIndicator: (base) => ({
         ...base,
         padding: isSmall ? '2px 6px' : '4px 8px',
-        color: variant === 'badge' && currentBadgeStyle ? currentBadgeStyle.text : '#94A3B8',
+        color: variant === 'badge' && currentBadgeStyle ? currentBadgeStyle.text : '#666666',
         '&:hover': {
-          color: '#F8FAFC',
+          color: '#111111',
         },
       }),
       clearIndicator: (base) => ({
         ...base,
         padding: isSmall ? '2px 4px' : '4px 6px',
-        color: '#94A3B8',
+        color: '#888888',
         '&:hover': {
-          color: '#EF4444',
+          color: '#DC2626',
         },
       }),
       menuPortal: (base) => ({
@@ -350,12 +345,11 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
       }),
       menu: (base) => ({
         ...base,
-        backgroundColor: '#091224',
-        border: '1px solid rgba(0, 255, 136, 0.3)',
-        borderRadius: '8px',
-        boxShadow:
-          '0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 255, 136, 0.1)',
-        padding: '4px',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #111111',
+        borderRadius: '3px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+        padding: '3px',
         zIndex: 9999,
         minWidth: isSmall ? '120px' : '160px',
       }),
@@ -366,57 +360,58 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
       }),
       option: (base, state) => {
         let bg = 'transparent';
-        let color = '#E6F4F1';
+        let color = '#111111';
 
         if (state.isSelected) {
-          bg = '#00FF88';
-          color = '#04070F';
+          bg = '#FF7900';
+          color = '#111111';
         } else if (state.isFocused) {
-          bg = 'rgba(0, 255, 136, 0.15)';
-          color = '#00FF88';
+          bg = '#FFF7ED';
+          color = '#111111';
         }
 
         return {
           ...base,
           backgroundColor: bg,
           color: color,
-          borderRadius: '6px',
+          borderRadius: '2px',
           padding: isSmall ? '5px 8px' : '7px 10px',
           fontSize: isSmall ? '12px' : '13px',
-          fontFamily: 'JetBrains Mono, monospace',
+          fontFamily: '"Space Grotesk", "JetBrains Mono", monospace',
           fontWeight: state.isSelected ? 700 : 500,
           cursor: state.isDisabled ? 'not-allowed' : 'pointer',
           opacity: state.isDisabled ? 0.4 : 1,
           '&:active': {
-            backgroundColor: '#00E57A',
-            color: '#04070F',
+            backgroundColor: '#E66D00',
+            color: '#111111',
           },
         };
       },
       multiValue: (base) => ({
         ...base,
-        backgroundColor: 'rgba(0, 255, 136, 0.15)',
-        border: '1px solid rgba(0, 255, 136, 0.4)',
-        borderRadius: '4px',
+        backgroundColor: '#FFF7ED',
+        border: '1px solid #FF7900',
+        borderRadius: '2px',
         margin: '1px 3px 1px 0',
       }),
       multiValueLabel: (base) => ({
         ...base,
-        color: '#F8FAFC',
+        color: '#111111',
         fontSize: isSmall ? '11px' : '12px',
+        fontWeight: 600,
         padding: '1px 5px',
       }),
       multiValueRemove: (base) => ({
         ...base,
-        color: '#94A3B8',
+        color: '#666666',
         ':hover': {
-          backgroundColor: 'rgba(239, 68, 68, 0.2)',
-          color: '#EF4444',
+          backgroundColor: '#FEE2E2',
+          color: '#DC2626',
         },
       }),
       noOptionsMessage: (base) => ({
         ...base,
-        color: '#94A3B8',
+        color: '#888888',
         fontSize: isSmall ? '12px' : '13px',
         padding: '8px 12px',
       }),
@@ -434,11 +429,11 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
   }, [customComponents]);
 
   return (
-    <div className={`w-full flex flex-col space-y-1.5 ${containerClassName}`}>
+    <div className={`w-full flex flex-col space-y-1 ${containerClassName}`}>
       {label && (
-        <label htmlFor={selectId} className="text-xs font-semibold text-dark-text tracking-wide">
+        <label htmlFor={selectId} className="text-xs font-bold text-[#111111] uppercase tracking-wider">
           {label}
-          {required && <span className="text-danger ml-1">*</span>}
+          {required && <span className="text-danger ml-1 font-bold">*</span>}
         </label>
       )}
 
@@ -468,7 +463,7 @@ function SelectInner<T = string | number, IsMulti extends boolean = false>(
       )}
 
       {!error && helperText && (
-        <p className="text-xs text-dark-muted">
+        <p className="text-xs text-[#666666]">
           {helperText}
         </p>
       )}

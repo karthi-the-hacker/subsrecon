@@ -120,12 +120,43 @@ describe('ReconMappingGraph Component', () => {
 
   it('correctly splits subdomains: leaves on left, subdomains with children on right, and descendants further right', () => {
     // Intercept blob creation to inspect exported tree data
-    let exportedData: any = null;
+    interface ExportedChild {
+      hostname: string;
+      rightChildren?: ExportedChild[];
+      leftChildren?: ExportedChild[];
+    }
+    interface ExportedNode {
+      data: {
+        hostname?: string;
+        isLoadMore?: boolean;
+        remaining?: number;
+        batch?: number;
+        label?: string;
+      };
+      position: { x: number; y: number };
+    }
+    interface ExportedPayload {
+      attackSurfaceOverview: {
+        totalSubdomainsCount: number;
+        rootDomainsCount: number;
+      };
+      treeHierarchy: Array<{
+        hostname: string;
+        leftChildren: ExportedChild[];
+        rightChildren: ExportedChild[];
+      }>;
+      graphElements: {
+        nodes: ExportedNode[];
+        edges: unknown[];
+      };
+    }
+
+    let exportedData: ExportedPayload | null = null;
     window.Blob = class MockBlob {
       constructor(content: string[]) {
-        exportedData = JSON.parse(content[0] || '{}');
+        exportedData = JSON.parse(content[0] || '{}') as ExportedPayload;
       }
-    } as any;
+    } as unknown as typeof Blob;
 
     const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url');
     window.URL.createObjectURL = createObjectURLMock;
@@ -136,48 +167,55 @@ describe('ReconMappingGraph Component', () => {
     fireEvent.click(exportBtn);
 
     expect(exportedData).toBeTruthy();
-    expect(exportedData.attackSurfaceOverview.totalSubdomainsCount).toBe(4);
-    expect(exportedData.attackSurfaceOverview.rootDomainsCount).toBe(1);
+    expect(exportedData!.attackSurfaceOverview.totalSubdomainsCount).toBe(4);
+    expect(exportedData!.attackSurfaceOverview.rootDomainsCount).toBe(1);
 
-    const rootTree = exportedData.treeHierarchy[0];
-    expect(rootTree.hostname).toBe('1wtoken.com');
+    const rootTree = exportedData!.treeHierarchy[0];
+    expect(rootTree).toBeDefined();
+    expect(rootTree!.hostname).toBe('1wtoken.com');
 
     // Left children: leaves directly under root (no more subdomains)
-    const leftHosts = rootTree.leftChildren.map((c: any) => c.hostname);
+    const leftHosts = rootTree!.leftChildren.map((c: ExportedChild) => c.hostname);
     expect(leftHosts).toContain('inst1.1wtoken.com');
     expect(leftHosts).toContain('www.1wtoken.com');
     expect(leftHosts).not.toContain('inst.1wtoken.com');
 
     // Right children: branch nodes directly under root (has more subdomains)
-    const rightHosts = rootTree.rightChildren.map((c: any) => c.hostname);
+    const rightHosts = rootTree!.rightChildren.map((c: ExportedChild) => c.hostname);
     expect(rightHosts).toContain('inst.1wtoken.com');
     expect(rightHosts).not.toContain('inst1.1wtoken.com');
     expect(rightHosts).not.toContain('www.1wtoken.com');
 
     // Descendant of inst.1wtoken.com is further on the right
-    const instNode = rootTree.rightChildren.find((c: any) => c.hostname === 'inst.1wtoken.com');
-    expect(instNode.rightChildren.map((c: any) => c.hostname)).toContain('www.inst.1wtoken.com');
+    const instNode = rootTree!.rightChildren.find((c: ExportedChild) => c.hostname === 'inst.1wtoken.com');
+    expect((instNode?.rightChildren || []).map((c: ExportedChild) => c.hostname)).toContain('www.inst.1wtoken.com');
 
     // Verify cytoscape node coordinates:
     // Left nodes have negative x (left of center root at x = 0)
     // Right nodes have positive x (right of center root at x = 0)
-    const nodes = exportedData.graphElements.nodes;
-    const rootPos = nodes.find((n: any) => n.data.hostname === '1wtoken.com').position;
-    const inst1Pos = nodes.find((n: any) => n.data.hostname === 'inst1.1wtoken.com').position;
-    const wwwPos = nodes.find((n: any) => n.data.hostname === 'www.1wtoken.com').position;
-    const instPos = nodes.find((n: any) => n.data.hostname === 'inst.1wtoken.com').position;
-    const wwwInstPos = nodes.find((n: any) => n.data.hostname === 'www.inst.1wtoken.com').position;
+    const nodes = exportedData!.graphElements.nodes;
+    const rootPos = nodes.find((n: ExportedNode) => n.data.hostname === '1wtoken.com')?.position;
+    const inst1Pos = nodes.find((n: ExportedNode) => n.data.hostname === 'inst1.1wtoken.com')?.position;
+    const wwwPos = nodes.find((n: ExportedNode) => n.data.hostname === 'www.1wtoken.com')?.position;
+    const instPos = nodes.find((n: ExportedNode) => n.data.hostname === 'inst.1wtoken.com')?.position;
+    const wwwInstPos = nodes.find((n: ExportedNode) => n.data.hostname === 'www.inst.1wtoken.com')?.position;
 
-    expect(rootPos.x).toBe(0);
+    expect(rootPos).toBeDefined();
+    expect(inst1Pos).toBeDefined();
+    expect(wwwPos).toBeDefined();
+    expect(instPos).toBeDefined();
+    expect(wwwInstPos).toBeDefined();
+
+    expect(rootPos!.x).toBe(0);
     // Left children: x < rootPos.x
-    expect(inst1Pos.x).toBeLessThan(rootPos.x);
-    expect(wwwPos.x).toBeLessThan(rootPos.x);
+    expect(inst1Pos!.x).toBeLessThan(rootPos!.x);
+    expect(wwwPos!.x).toBeLessThan(rootPos!.x);
 
     // Right children: x > rootPos.x
-    expect(instPos.x).toBeGreaterThan(rootPos.x);
+    expect(instPos!.x).toBeGreaterThan(rootPos!.x);
 
     // Descendants on right branch: x > parent.x
-    expect(wwwInstPos.x).toBeGreaterThan(instPos.x);
+    expect(wwwInstPos!.x).toBeGreaterThan(instPos!.x);
   });
 
   it('does not render "Select a node" empty placeholder when no entity is selected', () => {
@@ -220,5 +258,111 @@ describe('ReconMappingGraph Component', () => {
     // Toggle fullscreen off
     fireEvent.click(exitBtns[0]!);
     expect(screen.getAllByLabelText(/Fullscreen Canvas/i).length).toBeGreaterThan(0);
+  });
+
+  it('limits initial display to 30 subdomains when target has >30 subdomains and shows Load 30 More button', () => {
+    const largeRecon: ReconDetail = {
+      ...mockRecon,
+      name: 'lge.com',
+      domains: ['lge.com'],
+      subdomainCount: 100,
+      subdomains: Array.from({ length: 100 }, (_, i) => ({
+        hostname: `sub${i + 1}.lge.com`,
+        rootDomain: 'lge.com',
+        parent: null,
+        depth: 1,
+        source: 'enumeration',
+        firstSeenAt: '2026-11-02T11:35:51.669Z',
+        lastSeenAt: '2026-11-02T11:35:51.669Z',
+      })),
+      relationships: Array.from({ length: 100 }, (_, i) => ({
+        parent: 'lge.com',
+        child: `sub${i + 1}.lge.com`,
+        type: 'subdomain',
+      })),
+    };
+
+    render(<ReconMappingGraph recon={largeRecon} />);
+
+    // Shows 31 entities in view (1 root + 30 subdomains)
+    expect(screen.getByText(/31 \/ 101 ENTITIES/i)).toBeInTheDocument();
+    // Shows Load 30 More button
+    const loadMoreBtn = screen.getByRole('button', { name: /\+ Load 30 More/i });
+    expect(loadMoreBtn).toBeInTheDocument();
+    // Shows Load All button
+    expect(screen.getByRole('button', { name: /Load All/i })).toBeInTheDocument();
+
+    // Clicking + Load 30 More
+    fireEvent.click(loadMoreBtn);
+    // Now shows 61 / 101 entities
+    expect(screen.getByText(/61 \/ 101 ENTITIES/i)).toBeInTheDocument();
+
+    // Clicking Load All
+    const loadAllBtn = screen.getByRole('button', { name: /Load All/i });
+    fireEvent.click(loadAllBtn);
+    expect(screen.getByText(/101 \/ 101 ENTITIES/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Reset to 30/i })).toBeInTheDocument();
+
+    // Clicking Reset to 30
+    const resetBtn = screen.getByRole('button', { name: /Reset to 30/i });
+    fireEvent.click(resetBtn);
+    expect(screen.getByText(/31 \/ 101 ENTITIES/i)).toBeInTheDocument();
+  });
+
+  it('generates a load-more node with remaining assets count when dataset exceeds chunk size', () => {
+    interface ExportedLoadMoreNode {
+      data: {
+        isLoadMore?: boolean;
+        remaining?: number;
+        batch?: number;
+        label?: string;
+      };
+    }
+    interface ExportedLargePayload {
+      graphElements: {
+        nodes: ExportedLoadMoreNode[];
+      };
+    }
+
+    let exportedData: ExportedLargePayload | null = null;
+    window.Blob = class MockBlob {
+      constructor(content: string[]) {
+        exportedData = JSON.parse(content[0] || '{}') as ExportedLargePayload;
+      }
+    } as unknown as typeof Blob;
+
+    const largeRecon: ReconDetail = {
+      ...mockRecon,
+      name: 'lge.com',
+      domains: ['lge.com'],
+      subdomainCount: 100,
+      subdomains: Array.from({ length: 100 }, (_, i) => ({
+        hostname: `sub${i + 1}.lge.com`,
+        rootDomain: 'lge.com',
+        parent: null,
+        depth: 1,
+        source: 'enumeration',
+        firstSeenAt: '2026-11-02T11:35:51.669Z',
+        lastSeenAt: '2026-11-02T11:35:51.669Z',
+      })),
+      relationships: Array.from({ length: 100 }, (_, i) => ({
+        parent: 'lge.com',
+        child: `sub${i + 1}.lge.com`,
+        type: 'subdomain',
+      })),
+    };
+
+    render(<ReconMappingGraph recon={largeRecon} />);
+
+    const exportBtn = screen.getByText('EXPORT JSON ↗');
+    fireEvent.click(exportBtn);
+
+    const nodes = exportedData!.graphElements.nodes;
+    const loadMoreNode = nodes.find((n: ExportedLoadMoreNode) => n.data.isLoadMore);
+    expect(loadMoreNode).toBeTruthy();
+    expect(loadMoreNode!.data.remaining).toBe(70);
+    expect(loadMoreNode!.data.batch).toBe(30);
+    expect(loadMoreNode!.data.label).toContain('+ LOAD 30 MORE');
+    expect(loadMoreNode!.data.label).toContain('70 REMAINING');
   });
 });

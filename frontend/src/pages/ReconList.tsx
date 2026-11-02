@@ -29,10 +29,10 @@ import { formatDistanceToNow, parseISO } from 'date-fns';
 
 const STATUS_OPTIONS: SelectOption<string>[] = [
   { value: 'all', label: 'All Statuses' },
-  { value: 'completed', label: 'Completed', dotColor: '#00FF88' },
-  { value: 'running', label: 'Running', dotColor: '#00F0FF' },
-  { value: 'pending', label: 'Pending', dotColor: '#FFB000' },
-  { value: 'failed', label: 'Failed', dotColor: '#FF2A5F' },
+  { value: 'completed', label: 'Completed', dotColor: '#16A34A' },
+  { value: 'running', label: 'Running', dotColor: '#FF7900' },
+  { value: 'pending', label: 'Pending', dotColor: '#FF7900' },
+  { value: 'failed', label: 'Failed', dotColor: '#DC2626' },
 ];
 
 const SORT_OPTIONS: SelectOption<'createdAt_desc' | 'createdAt_asc' | 'name' | 'subdomains'>[] = [
@@ -145,35 +145,35 @@ export const ReconList: React.FC = () => {
     switch (status) {
       case 'completed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-primary/10 text-primary border border-primary/40 shadow-[0_0_8px_rgba(0,255,136,0.2)]">
-            <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-success-light text-success border border-[#BBF7D0]">
+            <CheckCircle2 className="w-3.5 h-3.5" />
             COMPLETED
           </span>
         );
       case 'running':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/40 animate-pulse shadow-[0_0_12px_rgba(0,240,255,0.25)]">
-            <Activity className="w-3.5 h-3.5 animate-spin text-cyber-cyan" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-[#FFF7ED] text-primary border border-primary/40">
+            <Activity className="w-3.5 h-3.5 animate-spin text-primary" />
             SCANNING
           </span>
         );
       case 'failed':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-danger/15 text-danger border border-danger/40 shadow-[0_0_8px_rgba(255,42,95,0.2)]">
-            <XCircle className="w-3.5 h-3.5 text-danger" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-danger-light text-danger border border-[#FECACA]">
+            <XCircle className="w-3.5 h-3.5" />
             FAILED
           </span>
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-warning/15 text-warning border border-warning/40">
-            <Clock className="w-3.5 h-3.5 text-warning" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-bold bg-[#FFF7ED] text-primary border border-primary/40">
+            <Clock className="w-3.5 h-3.5 text-primary" />
             QUEUED
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium bg-dark-border/40 text-dark-muted">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[2px] text-xs font-mono font-medium bg-[#FAFAFA] text-[#666666] border border-[#DCDCDC]">
             <AlertTriangle className="w-3.5 h-3.5" />
             {status}
           </span>
@@ -184,16 +184,16 @@ export const ReconList: React.FC = () => {
   return (
     <div className="space-y-6 font-sans">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-dark-border/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DCDCDC]">
         <div>
           <div className="flex items-center gap-2 font-mono text-xs text-primary mb-1">
             <Crosshair className="w-3.5 h-3.5" />
-            <span>ATTACK_SURFACE // TARGET_REGISTRY</span>
+            <span className="font-bold">ATTACK_SURFACE // TARGET_REGISTRY</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-tech font-bold text-white tracking-wider uppercase">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#111111] tracking-tight uppercase">
             RECONNAISSANCE CAMPAIGNS
           </h2>
-          <p className="text-xs text-dark-muted font-mono mt-0.5">
+          <p className="text-xs text-[#666666] font-mono mt-0.5">
             Monitor Subfinder enumeration pipelines and inspect attack surface intelligence.
           </p>
         </div>
@@ -219,7 +219,7 @@ export const ReconList: React.FC = () => {
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="p-4 cyber-panel rounded-xl flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+      <div className="p-4 bg-white border border-[#DCDCDC] rounded-[3px] flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between shadow-sm">
         <div className="flex-1 max-w-md">
           <Input
             placeholder="Search campaigns by name, domain, email..."
@@ -277,10 +277,10 @@ export const ReconList: React.FC = () => {
         />
       ) : (
         <div className="space-y-4">
-          <div className="overflow-x-auto cyber-panel rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+          <div className="overflow-x-auto bg-white border border-[#DCDCDC] rounded-[3px] shadow-sm">
             <table className="w-full text-left border-collapse font-mono">
               <thead>
-                <tr className="border-b border-dark-border/80 bg-dark-bg/60 text-[11px] font-bold text-dark-muted uppercase tracking-wider">
+                <tr className="border-b border-[#DCDCDC] bg-[#FAFAFA] text-[11px] font-bold text-[#666666] uppercase tracking-wider">
                   <th className="py-3 px-4">CAMPAIGN TARGET</th>
                   <th className="py-3 px-4">STATUS</th>
                   <th className="py-3 px-4">ROOT SCOPES</th>
@@ -289,23 +289,23 @@ export const ReconList: React.FC = () => {
                   <th className="py-3 px-4 text-right">COMMANDS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-dark-border/50 text-xs">
+              <tbody className="divide-y divide-[#DCDCDC] text-xs">
                 {paginatedRecons.map((recon) => (
                   <tr
                     key={recon.id}
-                    className="hover:bg-primary/5 transition-colors group cursor-pointer"
+                    className="hover:bg-[#FAFAFA] transition-colors group cursor-pointer"
                     onClick={() => navigate(`/recons/${recon.id}`)}
                   >
                     <td className="py-4 px-4">
                       <div>
                         <Link
                           to={`/recons/${recon.id}`}
-                          className="font-bold text-white group-hover:text-primary transition-colors text-sm flex items-center gap-2"
+                          className="font-bold text-[#111111] group-hover:text-primary transition-colors text-sm flex items-center gap-2"
                         >
-                          <Terminal className="w-3.5 h-3.5 text-primary/70 shrink-0" />
+                          <Terminal className="w-3.5 h-3.5 text-primary shrink-0" />
                           <span>{recon.name}</span>
                         </Link>
-                        <p className="text-[11px] text-dark-muted font-sans truncate max-w-xs mt-0.5">
+                        <p className="text-[11px] text-[#666666] font-sans truncate max-w-xs mt-0.5">
                           {recon.reportTo}
                         </p>
                       </div>
@@ -320,7 +320,7 @@ export const ReconList: React.FC = () => {
                         {(recon.domains || []).slice(0, 3).map((domain) => (
                           <span
                             key={domain}
-                            className="px-2 py-0.5 rounded bg-dark-bg/90 border border-dark-border text-dark-text text-[11px] font-mono shadow-sm"
+                            className="px-2 py-0.5 rounded-[2px] bg-[#FAFAFA] border border-[#DCDCDC] text-[#111111] text-[11px] font-mono"
                           >
                             {domain}
                           </span>
@@ -334,13 +334,13 @@ export const ReconList: React.FC = () => {
                     </td>
 
                     <td className="py-4 px-4 whitespace-nowrap">
-                      <span className="font-tech font-bold text-primary neon-text-green text-sm">
+                      <span className="font-bold text-primary text-sm">
                         {recon.subdomainCount || 0}
                       </span>
-                      <span className="text-[10px] text-dark-muted ml-1">subdomains</span>
+                      <span className="text-[11px] text-[#666666] ml-1">subdomains</span>
                     </td>
 
-                    <td className="py-4 px-4 text-dark-muted whitespace-nowrap text-[11px]">
+                    <td className="py-4 px-4 text-[#666666] whitespace-nowrap text-[11px]">
                       {recon.createdAt ? (
                         formatDistanceToNow(parseISO(recon.createdAt), {
                           addSuffix: true,
@@ -353,25 +353,25 @@ export const ReconList: React.FC = () => {
                     <td className="py-4 px-4 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1.5">
                         <Button
-                          variant="ghost"
+                          variant="secondary"
                           size="sm"
                           onClick={() => navigate(`/recons/${recon.id}?tab=mapping`)}
                           aria-label={`View mapping tree for ${recon.name}`}
                           title="View Mapping Tree (Subs Graph)"
-                          className="p-2 text-cyber-cyan hover:text-cyber-cyan hover:bg-cyber-cyan/15"
+                          className="p-2"
                         >
-                          <Network className="w-4 h-4 text-cyber-cyan" />
+                          <Network className="w-4 h-4 text-[#111111]" />
                         </Button>
 
                         <Button
-                          variant="ghost"
+                          variant="secondary"
                           size="sm"
                           onClick={() => navigate(`/recons/${recon.id}`)}
                           aria-label={`View details of ${recon.name}`}
                           title="View Campaign Details"
-                          className="p-2 hover:text-primary"
+                          className="p-2"
                         >
-                          <ExternalLink className="w-4 h-4 text-primary" />
+                          <ExternalLink className="w-4 h-4 text-[#111111]" />
                         </Button>
 
                         <Button
@@ -385,7 +385,7 @@ export const ReconList: React.FC = () => {
                               : 'Purge campaign'
                           }
                           aria-label={`Delete campaign ${recon.name}`}
-                          className="p-2 text-danger/70 hover:text-danger hover:bg-danger/10"
+                          className="p-2 text-[#666666] hover:text-danger hover:bg-danger/10"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -425,4 +425,5 @@ export const ReconList: React.FC = () => {
     </div>
   );
 };
+
 export default ReconList;

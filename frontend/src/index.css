@@ -3,178 +3,137 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* Attack Surface Intelligence Theme Tokens */
+  --primary: #FF7900;
+  --primary-hover: #E66D00;
+  --black: #111111;
+  --white: #FFFFFF;
+  --background: #F5F5F5;
+  --surface: #FFFFFF;
+  --surface-secondary: #FAFAFA;
+  --border: #DCDCDC;
+  --border-strong: #111111;
+  --foreground: #111111;
+  --secondary: #666666;
+  --muted: #888888;
+  --success: #16A34A;
+  --warning: #FF7900;
+  --error: #DC2626;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  background-color: #04070F;
-  color: #E6F4F1;
-  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Space Grotesk', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 100% 100%, rgba(0, 240, 255, 0.05) 0%, transparent 50%),
-    url('/hacker-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle High-Tech Cyber Scanlines Overlay */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9999;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.015),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.015)
-  );
-  background-size: 100% 3px, 6px 100%;
-  opacity: 0.45;
-}
-
-/* Custom Tactical Cyber Scrollbars */
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(4, 7, 15, 0.9);
-  border-left: 1px solid rgba(21, 37, 66, 0.6);
+  background: #F5F5F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 255, 136, 0.35);
+  background: #DCDCDC;
   border-radius: 2px;
-  box-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 255, 136, 0.7);
-  box-shadow: 0 0 12px rgba(0, 255, 136, 0.8);
+  background: var(--primary);
 }
 
-/* Top route navigation progress bar */
-@keyframes indeterminateProgress {
-  0% {
-    transform: translateX(-100%);
-  }
-  50% {
-    transform: translateX(0%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.animate-route-progress {
-  animation: indeterminateProgress 0.8s ease-in-out infinite;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Cyber HUD Glassmorphism & Borders */
+/* Dashboard & Interface Cards */
 .cyber-panel {
-  background: rgba(9, 18, 36, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(22, 40, 70, 0.75);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.cyber-panel-glow {
-  background: rgba(9, 18, 36, 0.82);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 255, 136, 0.28);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 255, 136, 0.12), inset 0 0 15px rgba(0, 255, 136, 0.04);
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .cyber-panel:hover {
-  border-color: rgba(0, 255, 136, 0.35);
-  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.75), 0 0 20px rgba(0, 255, 136, 0.08);
+  border-color: #C0C0C0;
 }
 
-/* Tactical Corner Accents */
-.cyber-corners {
-  position: relative;
+.cyber-panel-glow {
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--primary);
+  border-radius: 3px;
 }
 
-.cyber-corners::before {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 8px;
-  height: 8px;
-  border-top: 2px solid #00FF88;
-  border-left: 2px solid #00FF88;
-  pointer-events: none;
+/* Buttons */
+.btn-primary {
+  background: var(--primary);
+  color: var(--black);
+  border: 1px solid var(--black);
+  border-radius: 3px;
+  font-weight: 700;
+  transition: all 0.15s ease-in-out;
 }
 
-.cyber-corners::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 8px;
-  height: 8px;
-  border-bottom: 2px solid #00FF88;
-  border-right: 2px solid #00FF88;
-  pointer-events: none;
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--black);
 }
 
-/* Glowing text helpers */
-.neon-text-green {
-  color: #00FF88;
-  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5), 0 0 20px rgba(0, 255, 136, 0.2);
+.btn-secondary {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--black);
+  border-radius: 3px;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
 }
 
-.neon-text-cyan {
-  color: #00F0FF;
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.2);
+.btn-secondary:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: #FFF7ED;
 }
 
-.neon-text-amber {
-  color: #FFB000;
-  text-shadow: 0 0 10px rgba(255, 176, 0, 0.5), 0 0 20px rgba(255, 176, 0, 0.2);
+/* Inputs */
+input, select, textarea {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 3px;
 }
 
-.neon-text-crimson {
-  color: #FF2A5F;
-  text-shadow: 0 0 10px rgba(255, 42, 95, 0.5), 0 0 20px rgba(255, 42, 95, 0.2);
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
-/* Cyber Matrix Background Grid */
-.cyber-grid {
-  background-image: 
-    linear-gradient(to right, rgba(0, 255, 136, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 255, 136, 0.05) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* Typography Helpers */
+.text-status-success {
+  color: var(--success);
+}
+
+.text-status-warning {
+  color: var(--primary);
+}
+
+.text-status-error {
+  color: var(--error);
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: var(--black);
 }
