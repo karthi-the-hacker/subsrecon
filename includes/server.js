@@ -400,6 +400,8 @@ app.post(
   "/subsrecon/:id/hunt-subdomains",
   authenticateToken,
   async (req, res) => {
+    req.setTimeout(0);
+    res.setTimeout(0);
     try {
       const { id } = req.params;
       const hostname = String(req.body.hostname || "")
@@ -658,6 +660,9 @@ app.patch(
     const server = app.listen(port, HOST, () => {
        
     });
+
+    server.timeout = 0;
+    server.requestTimeout = 0;
 
     server.on("error", error => {
         console.error(`[SERVER ERROR] ${error.message}`);

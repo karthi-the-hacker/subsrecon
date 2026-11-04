@@ -346,7 +346,7 @@
   - Recon must exist.
   - Scope check: Target hostname must equal or end with `.<root>` for one of the recon's root domains. If outside scope, returns `403`.
 - **Behavior:**
-  - Runs Subfinder synchronously for the domain (`timeout: 120000ms`, `includes/runner.js#L318`).
+  - Runs Subfinder synchronously for the domain with no timeout (`includes/runner.js#L305`).
   - Saves newly discovered descendants under the parent host into `recon.subdomains` and adds parent-child edges into `recon.relationships`.
 - **Success (200):**
   ```json

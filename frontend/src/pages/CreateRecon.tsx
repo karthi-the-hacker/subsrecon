@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { PlusCircle, Globe, Mail, Building, ArrowLeft, Info, AlertCircle, Crosshair, Terminal } from 'lucide-react';
 import { useCreateRecon } from '@/hooks/useRecons';
+import { useSEO } from '@/hooks/useSEO';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { AppError } from '@/types/api';
@@ -85,6 +86,11 @@ const createReconSchema = z.object({
 type CreateReconFormValues = z.infer<typeof createReconSchema>;
 
 export const CreateRecon: React.FC = () => {
+  useSEO({
+    title: 'Deploy New Recon',
+    description: 'Launch new attack surface discovery and multi-tool subdomain reconnaissance campaigns in SubsRecon.',
+  });
+
   const navigate = useNavigate();
   const createMutation = useCreateRecon();
   const [serverError, setServerError] = useState<string | null>(null);

@@ -42,7 +42,7 @@ export const API_BASE_URL = rawBaseUrl.replace(/\/+$/, '');
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 0, // No timeout to support long-running reconnaissance scans and hunts
   headers: {
     'Content-Type': 'application/json',
   },
@@ -81,7 +81,7 @@ export function normalizeError(error: unknown): AppError {
     if (axiosError.code === 'ECONNABORTED' || axiosError.message.includes('timeout')) {
       return {
         type: 'TIMEOUT',
-        message: 'Request timed out after 30 seconds. Please try again.',
+        message: 'The request took too long and timed out. Please try again.',
         status: 408,
         originalError: axiosError,
       };

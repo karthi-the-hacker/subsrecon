@@ -59,7 +59,10 @@ export const huntSubdomains = async (
 ): Promise<ApiResponse<HuntSubdomainsResponseData>> => {
   const response = await apiClient.post<ApiResponse<HuntSubdomainsResponseData>>(
     `/subsrecon/${reconId}/hunt-subdomains`,
-    payload
+    payload,
+    {
+      timeout: 0,
+    }
   );
   return response.data;
 };

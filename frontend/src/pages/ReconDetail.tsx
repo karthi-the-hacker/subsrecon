@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -18,9 +18,14 @@ import {
 import {
   useReconDetails,
   useDeleteRecon,
-  useHuntSubdomains,
   useUpdateDomainStatus,
+  RECONS_QUERY_KEY,
+  reconDetailQueryKey,
 } from '@/hooks/useRecons';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { huntSubdomains } from '@/api/subsrecon';
+import { useSEO } from '@/hooks/useSEO';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Loader } from '@/components/common/Loader';
@@ -53,10 +58,37 @@ export const ReconDetail: React.FC<{
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
+  const queryClient = useQueryClient();
   const { data: recon, isLoading, isError, error, refetch, isFetching } = useReconDetails(id);
   const deleteMutation = useDeleteRecon();
-  const huntMutation = useHuntSubdomains(id || '');
   const updateStatusMutation = useUpdateDomainStatus(id || '');
+
+  // Concurrent Hunts Map: hostname -> elapsedSeconds
+  const [activeHunts, setActiveHunts] = useState<Record<string, number>>({});
+  const activeHuntCount = Object.keys(activeHunts).length;
+
+  useEffect(() => {
+    if (Object.keys(activeHunts).length === 0) return;
+
+    const interval = setInterval(() => {
+      setActiveHunts((prev) => {
+        const next: Record<string, number> = {};
+        for (const [host, elapsed] of Object.entries(prev)) {
+          next[host] = elapsed + 1;
+        }
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [Object.keys(activeHunts).length > 0]);
+
+  useSEO({
+    title: recon ? `${recon.name} — Campaign Intelligence` : 'Campaign Intelligence',
+    description: recon
+      ? `Reconnaissance graph topology, discovered subdomains, and attack surface intelligence for ${recon.name}.`
+      : 'Attack surface intelligence, topology mapping, and scan findings in SubsRecon.',
+  });
 
   const tabQuery = searchParams.get('tab') as 'mapping' | 'subdomains' | 'relationships' | 'diagnostics' | null;
   const [activeTab, setActiveTab] = useState<'mapping' | 'subdomains' | 'relationships' | 'diagnostics'>(
@@ -134,12 +166,40 @@ export const ReconDetail: React.FC<{
   };
 
   const handleStartHunt = async () => {
-    if (!huntTargetModal.hostname) return;
-    try {
-      await huntMutation.mutateAsync({ hostname: huntTargetModal.hostname });
+    const targetHost = huntTargetModal.hostname;
+    if (!targetHost) return;
+
+    if (activeHunts[targetHost] !== undefined) {
+      toast.info(`Subdomain hunt already running for ${targetHost} (${activeHunts[targetHost]}s).`, {
+        toastId: `hunt-already-${targetHost}`,
+      });
       setHuntTargetModal({ isOpen: false, hostname: '' });
-    } catch {
-      // Handled in mutation hook
+      return;
+    }
+
+    // Immediately close modal to keep viewer clear and unobstructed
+    setHuntTargetModal({ isOpen: false, hostname: '' });
+
+    // Track target in activeHunts map
+    setActiveHunts((prev) => ({ ...prev, [targetHost]: 0 }));
+
+    try {
+      const res = await huntSubdomains(id || '', { hostname: targetHost });
+      queryClient.invalidateQueries({ queryKey: reconDetailQueryKey(id || '') });
+      queryClient.invalidateQueries({ queryKey: RECONS_QUERY_KEY });
+      toast.success(
+        `Subdomain hunt completed: discovered ${res.data?.count || 0} subdomains under ${targetHost}.`,
+        { toastId: `hunt-success-${targetHost}` }
+      );
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || `Subdomain hunt failed for ${targetHost}.`;
+      toast.error(msg, { toastId: `hunt-err-${targetHost}` });
+    } finally {
+      setActiveHunts((prev) => {
+        const next = { ...prev };
+        delete next[targetHost];
+        return next;
+      });
     }
   };
 
@@ -387,6 +447,24 @@ export const ReconDetail: React.FC<{
         >
           METADATA &amp; DIAGNOSTICS
         </button>
+
+        {activeHuntCount > 0 && (
+          <div className="ml-auto flex items-center gap-2 px-3 py-1 bg-[#FFF7ED] border border-primary/40 text-primary text-xs rounded-[2px] font-mono whitespace-nowrap animate-fadeIn">
+            <Activity className="w-3.5 h-3.5 animate-spin text-primary" />
+            <span>
+              {activeHuntCount === 1 ? (
+                <>
+                  HUNTING: <strong>{Object.keys(activeHunts)[0]}</strong> (
+                  {Object.values(activeHunts)[0]}s)
+                </>
+              ) : (
+                <>
+                  <strong>{activeHuntCount} HUNTS RUNNING</strong>
+                </>
+              )}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Tab 0: Mapping Graph (Subs Graph) */}
@@ -395,6 +473,7 @@ export const ReconDetail: React.FC<{
           recon={recon}
           onHunt={(hostname) => setHuntTargetModal({ isOpen: true, hostname })}
           onStatusChange={handleDomainStatusChange}
+          activeHunts={activeHunts}
         />
       )}
 
@@ -512,17 +591,30 @@ export const ReconDetail: React.FC<{
                               <Button
                                 variant="secondary"
                                 size="sm"
+                                disabled={activeHunts[sub.hostname] !== undefined}
                                 onClick={() =>
                                   setHuntTargetModal({
                                     isOpen: true,
                                     hostname: sub.hostname,
                                   })
                                 }
-                                title="Run targeted hunt for subdomains under this host"
-                                leftIcon={<Crosshair className="w-3.5 h-3.5 text-primary" />}
+                                title={
+                                  activeHunts[sub.hostname] !== undefined
+                                    ? `Hunt in progress (${activeHunts[sub.hostname]}s)`
+                                    : 'Run targeted hunt for subdomains under this host'
+                                }
+                                leftIcon={
+                                  activeHunts[sub.hostname] !== undefined ? (
+                                    <Activity className="w-3.5 h-3.5 animate-spin text-primary" />
+                                  ) : (
+                                    <Crosshair className="w-3.5 h-3.5 text-primary" />
+                                  )
+                                }
                                 className="px-2.5 py-1 text-xs"
                               >
-                                HUNT
+                                {activeHunts[sub.hostname] !== undefined
+                                  ? `${activeHunts[sub.hostname]}s`
+                                  : 'HUNT'}
                               </Button>
                             </div>
                           </td>
@@ -654,7 +746,6 @@ export const ReconDetail: React.FC<{
               variant="secondary"
               size="sm"
               onClick={() => setHuntTargetModal({ isOpen: false, hostname: '' })}
-              disabled={huntMutation.isPending}
             >
               ABORT
             </Button>
@@ -662,7 +753,6 @@ export const ReconDetail: React.FC<{
               variant="primary"
               size="sm"
               onClick={handleStartHunt}
-              isLoading={huntMutation.isPending}
               leftIcon={<Crosshair className="w-4 h-4" />}
             >
               LAUNCH HUNT

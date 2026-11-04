@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Eye, EyeOff, Lock, User, AlertCircle, Radar, Terminal, KeyRound } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useSEO } from '@/hooks/useSEO';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { AppError } from '@/types/api';
@@ -17,6 +18,11 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export const Login: React.FC = () => {
+  useSEO({
+    title: 'Operator Login',
+    description: 'Sign in to access the SubsRecon tactical reconnaissance dashboard and manage attack surface campaigns.',
+  });
+
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();

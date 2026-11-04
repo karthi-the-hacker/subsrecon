@@ -21,9 +21,11 @@ import {
   ChevronDown,
   ChevronRight,
   Layers,
+  Radar,
 } from 'lucide-react';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
+import { Loader } from '@/components/common/Loader';
 import { ReconDetail, DomainStatus, SubdomainEntry, ReconRelationship } from '@/types/api';
 import { toast } from 'react-toastify';
 import { format, parseISO } from 'date-fns';
@@ -32,6 +34,10 @@ export interface ReconMappingGraphProps {
   recon: ReconDetail;
   onHunt?: (hostname: string) => void;
   onStatusChange?: (hostname: string, newStatus: DomainStatus) => Promise<void>;
+  activeHunts?: Record<string, number>;
+  isHunting?: boolean;
+  huntingHost?: string;
+  huntElapsed?: number;
 }
 
 interface DomainNodeData {
@@ -70,9 +76,23 @@ export const ReconMappingGraph: React.FC<ReconMappingGraphProps> = ({
   recon,
   onHunt,
   onStatusChange,
+  activeHunts = {},
+  isHunting = false,
+  huntingHost = '',
+  huntElapsed = 0,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<Core | null>(null);
+
+  const currentHunts: Record<string, number> = useMemo(() => {
+    if (activeHunts && Object.keys(activeHunts).length > 0) return activeHunts;
+    if (isHunting && huntingHost) return { [huntingHost]: huntElapsed || 0 };
+    return {};
+  }, [activeHunts, isHunting, huntingHost, huntElapsed]);
+
+  const huntEntries = Object.entries(currentHunts);
+  const isAnyHunting = huntEntries.length > 0;
+  const [firstHuntHost = '', firstHuntElapsed = 0] = huntEntries[0] || [];
 
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
@@ -662,6 +682,16 @@ export const ReconMappingGraph: React.FC<ReconMappingGraphProps> = ({
             color: '#111111',
           },
         },
+        // Actively hunting node
+        {
+          selector: 'node.hunting-node',
+          style: {
+            'border-width': 2.5,
+            'border-style': 'dashed',
+            'border-color': '#111111',
+            'background-color': '#FFB066',
+          },
+        },
         // Search & Filter Highlight
         {
           selector: 'node.highlighted-node',
@@ -810,6 +840,23 @@ export const ReconMappingGraph: React.FC<ReconMappingGraphProps> = ({
       cyRef.current = null;
     };
   }, [cytoscapeElements, handleLoadMore, toggleExpand, expandedHosts]);
+
+  // Sync active hunts visual indicator onto Cytoscape nodes
+  useEffect(() => {
+    if (!cyRef.current) return;
+    const cy = cyRef.current;
+    const activeHosts = new Set(Object.keys(currentHunts));
+    cy.batch(() => {
+      cy.nodes().forEach((n) => {
+        const host = n.data('hostname');
+        if (host && activeHosts.has(host)) {
+          n.addClass('hunting-node');
+        } else {
+          n.removeClass('hunting-node');
+        }
+      });
+    });
+  }, [currentHunts]);
 
   // Handle Esc key to exit fullscreen mode or close popover
   useEffect(() => {
@@ -1496,6 +1543,95 @@ export const ReconMappingGraph: React.FC<ReconMappingGraphProps> = ({
 
             {/* Cytoscape Container with Subtle Orange Dotted Grid Background */}
             <div className={`relative border border-[#DCDCDC] rounded-[3px] overflow-hidden ${isFullscreen ? 'flex-1 min-h-[400px]' : ''}`}>
+              {/* Active Hunt Floating Indicator on the Graph Viewer */}
+              {isAnyHunting && (
+                huntEntries.length === 1 ? (
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-white/95 backdrop-blur-xs border border-[#111111] px-5 py-3 rounded-[3px] shadow-lg flex flex-col gap-2 font-mono animate-fadeIn pointer-events-auto min-w-[340px] max-w-md">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-[3px] bg-[#FFF7ED] border border-primary flex items-center justify-center shrink-0">
+                        <Radar className="w-4.5 h-4.5 text-primary animate-radar-sweep" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5 truncate">
+                            <span className="text-xs font-bold text-[#111111] uppercase tracking-wide">
+                              HUNT:
+                            </span>
+                            <span className="text-xs font-mono font-bold text-primary truncate">
+                              {firstHuntHost}
+                            </span>
+                          </div>
+                          <span className="text-[10px] font-bold bg-[#111111] text-white px-2 py-0.5 rounded-[2px] shrink-0">
+                            {firstHuntElapsed}s
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[#666666] flex items-center gap-1.5 mt-0.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-ping shrink-0" />
+                          <span className="truncate">Subfinder enumeration in progress...</span>
+                        </p>
+                      </div>
+                    </div>
+                    <div className="w-full bg-[#E5E5E5] h-1.5 rounded-full overflow-hidden">
+                      <div
+                        className="bg-primary h-full rounded-full transition-all duration-300"
+                        style={{
+                          width: `${Math.min(95, Math.max(12, (firstHuntElapsed / 40) * 100))}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 bg-white/95 backdrop-blur-xs border border-[#111111] px-5 py-3 rounded-[3px] shadow-xl flex flex-col gap-2.5 font-mono animate-fadeIn pointer-events-auto min-w-[380px] max-w-lg">
+                    <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-[2px] bg-[#FFF7ED] border border-primary flex items-center justify-center shrink-0">
+                          <Radar className="w-3.5 h-3.5 text-primary animate-radar-sweep" />
+                        </div>
+                        <span className="text-xs font-bold text-[#111111] uppercase tracking-wider">
+                          ACTIVE HUNTS ({huntEntries.length} RUNNING)
+                        </span>
+                      </div>
+                      <span className="flex h-2 w-2 relative">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                      </span>
+                    </div>
+
+                    <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
+                      {huntEntries.map(([host, elapsed]) => (
+                        <div
+                          key={host}
+                          className="p-2 bg-[#FAFAFA] border border-[#DCDCDC] rounded-[2px] space-y-1 text-xs"
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="font-bold text-[#111111] truncate max-w-[260px]">
+                              {host}
+                            </span>
+                            <span className="text-[10px] font-bold bg-[#111111] text-white px-1.5 py-0.2 rounded-[2px] shrink-0">
+                              {elapsed}s
+                            </span>
+                          </div>
+                          <div className="w-full bg-[#E5E5E5] h-1 rounded-full overflow-hidden">
+                            <div
+                              className="bg-primary h-full rounded-full transition-all duration-300"
+                              style={{
+                                width: `${Math.min(95, Math.max(10, (elapsed / 40) * 100))}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              )}
+
+              {cytoscapeElements.length === 0 && (
+                <div className="absolute inset-0 z-20 bg-white/80 backdrop-blur-xs flex items-center justify-center pointer-events-none">
+                  <Loader size="md" text="Loading asset topology..." />
+                </div>
+              )}
+
               <div
                 ref={containerRef}
                 className={`w-full ${isFullscreen ? 'h-full min-h-[400px]' : 'h-[720px] lg:h-[780px] xl:h-[840px]'} cursor-grab active:cursor-grabbing`}
@@ -1551,14 +1687,31 @@ export const ReconMappingGraph: React.FC<ReconMappingGraphProps> = ({
                     {/* Action 1: Hunt more subdomains */}
                     {onHunt && (
                       <button
+                        disabled={currentHunts[activePopover.hostname] !== undefined}
                         onClick={() => {
+                          if (currentHunts[activePopover.hostname] !== undefined) return;
                           onHunt(activePopover.hostname);
                           setActivePopover(null);
                         }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[2px] text-[#111111] hover:text-primary bg-[#FAFAFA] hover:bg-[#FFF7ED] border border-[#111111] transition-colors font-mono text-xs cursor-pointer text-left font-bold"
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-[2px] transition-colors font-mono text-xs text-left font-bold border ${
+                          currentHunts[activePopover.hostname] !== undefined
+                            ? 'bg-[#FFF7ED] text-primary border-primary/50 cursor-not-allowed opacity-90'
+                            : 'text-[#111111] hover:text-primary bg-[#FAFAFA] hover:bg-[#FFF7ED] border-[#111111] cursor-pointer'
+                        }`}
                       >
-                        <Crosshair className="w-4 h-4 text-primary shrink-0" />
-                        <span>Hunt more subdomains</span>
+                        {currentHunts[activePopover.hostname] !== undefined ? (
+                          <>
+                            <Activity className="w-4 h-4 text-primary animate-spin shrink-0" />
+                            <span className="truncate">
+                              Hunt running ({currentHunts[activePopover.hostname]}s)...
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Crosshair className="w-4 h-4 text-primary shrink-0" />
+                            <span>Hunt more subdomains</span>
+                          </>
+                        )}
                       </button>
                     )}
 
@@ -1797,10 +1950,19 @@ export const ReconMappingGraph: React.FC<ReconMappingGraphProps> = ({
                     <Button
                       variant="primary"
                       size="sm"
+                      disabled={currentHunts[selectedEntity.hostname] !== undefined}
                       onClick={() => onHunt(selectedEntity.hostname)}
-                      leftIcon={<Crosshair className="w-3.5 h-3.5" />}
+                      leftIcon={
+                        currentHunts[selectedEntity.hostname] !== undefined ? (
+                          <Activity className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Crosshair className="w-3.5 h-3.5" />
+                        )
+                      }
                     >
-                      Hunt
+                      {currentHunts[selectedEntity.hostname] !== undefined
+                        ? `Hunting (${currentHunts[selectedEntity.hostname]}s)...`
+                        : 'Hunt'}
                     </Button>
                   )}
 

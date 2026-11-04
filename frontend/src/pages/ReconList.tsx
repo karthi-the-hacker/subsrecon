@@ -16,6 +16,7 @@ import {
   Network,
 } from 'lucide-react';
 import { useRecons, useDeleteRecon } from '@/hooks/useRecons';
+import { useSEO } from '@/hooks/useSEO';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Loader } from '@/components/common/Loader';
@@ -43,6 +44,11 @@ const SORT_OPTIONS: SelectOption<'createdAt_desc' | 'createdAt_asc' | 'name' | '
 ];
 
 export const ReconList: React.FC = () => {
+  useSEO({
+    title: 'Target Campaigns',
+    description: 'Active and completed reconnaissance campaigns, discovered subdomains, and attack surface targets in SubsRecon.',
+  });
+
   const navigate = useNavigate();
   const { data: recons, isLoading, isError, error, refetch, isFetching } = useRecons();
   const deleteMutation = useDeleteRecon();

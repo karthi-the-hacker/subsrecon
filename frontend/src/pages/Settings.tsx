@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Server, User, CheckCircle2, XCircle, LogOut, Terminal, Cpu, KeyRound, Radio } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useSEO } from '@/hooks/useSEO';
 import { checkHealth } from '@/api/subsrecon';
 import { API_BASE_URL } from '@/api/client';
 import { Button } from '@/components/common/Button';
 
 export const Settings: React.FC = () => {
+  useSEO({
+    title: 'System Configuration',
+    description: 'Configure SubsRecon scan engines, telemetry status, node configurations, and session management.',
+  });
+
   const { user, logout } = useAuth();
   const [backendStatus, setBackendStatus] = useState<'checking' | 'online' | 'offline'>('checking');
   const [backendMessage, setBackendMessage] = useState<string>('');

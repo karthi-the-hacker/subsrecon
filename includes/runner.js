@@ -314,7 +314,7 @@ function runSubfinderForDomain(hostname) {
       {
         shell: false,
         windowsHide: true,
-        timeout: 120000
+        timeout: 0
       }
     );
 

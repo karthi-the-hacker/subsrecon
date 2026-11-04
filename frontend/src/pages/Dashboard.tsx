@@ -18,6 +18,7 @@ import {
   Cpu,
 } from 'lucide-react';
 import { useRecons } from '@/hooks/useRecons';
+import { useSEO } from '@/hooks/useSEO';
 import { Button } from '@/components/common/Button';
 import { Loader } from '@/components/common/Loader';
 import { ErrorState } from '@/components/common/ErrorState';
@@ -26,6 +27,11 @@ import { ReconStatus } from '@/types/api';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
 export const Dashboard: React.FC = () => {
+  useSEO({
+    title: 'Tactical Radar & Telemetry',
+    description: 'Real-time telemetry, campaign metrics, tool inventory, and attack surface overview in SubsRecon.',
+  });
+
   const navigate = useNavigate();
   const { data: recons, isLoading, isError, error, refetch, isFetching } = useRecons();
 
