@@ -1,0 +1,16 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /dashboard
+Allow: /recons
+Allow: /new-recon
+Allow: /settings
+
+# Restrict raw internal API endpoints from search index
+Disallow: /api/
+Disallow: /subsrecon/api/
+
+# Host and Sitemap specifications
+Host: https://cappriciosec.com
+Sitemap: https://cappriciosec.com/subsrecon/sitemap.xml

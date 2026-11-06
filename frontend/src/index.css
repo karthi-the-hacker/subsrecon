@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+
+  /* Attack Surface Intelligence Theme Tokens */
+  --primary: #FF7900;
+  --primary-hover: #E66D00;
+  --black: #111111;
+  --white: #FFFFFF;
+  --background: #F5F5F5;
+  --surface: #FFFFFF;
+  --surface-secondary: #FAFAFA;
+  --border: #DCDCDC;
+  --border-strong: #111111;
+  --foreground: #111111;
+  --secondary: #666666;
+  --muted: #888888;
+  --success: #16A34A;
+  --warning: #FF7900;
+  --error: #DC2626;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Space Grotesk', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DCDCDC;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Dashboard & Interface Cards */
+.cyber-panel {
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cyber-panel:hover {
+  border-color: #C0C0C0;
+}
+
+.cyber-panel-glow {
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--primary);
+  border-radius: 3px;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--primary);
+  color: var(--black);
+  border: 1px solid var(--black);
+  border-radius: 3px;
+  font-weight: 700;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--black);
+}
+
+.btn-secondary {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--black);
+  border-radius: 3px;
+  font-weight: 600;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-secondary:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: #FFF7ED;
+}
+
+/* Inputs */
+input, select, textarea {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* Typography Helpers */
+.text-status-success {
+  color: var(--success);
+}
+
+.text-status-warning {
+  color: var(--primary);
+}
+
+.text-status-error {
+  color: var(--error);
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: var(--black);
+}

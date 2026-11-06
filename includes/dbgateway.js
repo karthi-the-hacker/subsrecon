@@ -504,7 +504,9 @@ async function setDomainStatus(reconId, hostname, status) {
   return { hostname: host, status: normalizedStatus };
 }
 
-async function saveHuntedSubdomains(reconId, parentHost, discoveredHosts) {
+let _saveHuntedMutex = Promise.resolve();
+
+async function _saveHuntedSubdomainsInternal(reconId, parentHost, discoveredHosts) {
   const parent = String(parentHost || "")
     .trim().toLowerCase().replace(/\.$/, "");
 
@@ -590,6 +592,15 @@ async function saveHuntedSubdomains(reconId, parentHost, discoveredHosts) {
     discovered: newHosts,
     count: newHosts.length
   };
+}
+
+async function saveHuntedSubdomains(reconId, parentHost, discoveredHosts) {
+  return new Promise((resolve, reject) => {
+    _saveHuntedMutex = _saveHuntedMutex
+      .then(() => _saveHuntedSubdomainsInternal(reconId, parentHost, discoveredHosts))
+      .then(resolve)
+      .catch(reject);
+  });
 }
 
 module.exports = {

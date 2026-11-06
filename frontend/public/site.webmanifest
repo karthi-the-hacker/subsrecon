@@ -1,0 +1,17 @@
+{
+  "name": "SUBSRECON // Tactical Attack Surface Intelligence",
+  "short_name": "SubsRecon",
+  "description": "Open-source subdomain discovery and attack surface intelligence framework for authorized security assessments.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F5F5F5",
+  "theme_color": "#FF7900",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
